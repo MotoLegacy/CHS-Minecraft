@@ -3,7 +3,7 @@ window.onload = function() {
         TODO:
         * Use an alternative image hosting site
         * Change jumping
-            - find best height, change system for height
+            - smoothen, better collison check
         * Convert keyboard events to ints for cleaner hotbar select
         * Sun move clockwise, moon move counter clockwise
     */
@@ -204,35 +204,31 @@ window.onload = function() {
     //tick system: 3ms = 1 tick
     //ticks are used for anything time based
     function playerGravity() {
-        //player.move(1, 0);
         for (var i = 0; i < blocks.length; i ++) {
-            if (player.getY() + 64 == blocks[i].getY()) {
+            if (player.getY() + 64 >= blocks[i].getY()) {
                 playerOnGround = true;
                 return;
             }
-                //return;
         }
         player.move(0, 4);
     }
     
     //jump
-    function playerJump() {
-        /*while(player.getY() != pTempY + 20) {
-            player.move(0, -1);
-            pTempY++;
-        }*/
-        if (player.getY() == pTempY + 8) {
-            setTimer(playerGravity, 10);
-            stopTimer(playerJump);
+    function playerJump(startY) {
+        if (!playerOnGround)
             return;
+        
+        playerOnGround = false;
+        
+        for (i = 0; i < startY + 8; i += 2) {
+            player.move(0, -0.5);
         }
-        player.move(0, -4);
-        pTempY++;
     }
     
     //input handling
     function keyDown(e) {
         if (e.keyCode == Keyboard.SPACE) {
+            playerJump(player.getY());
             /*if (!playerOnGround)
                 return;
             stopTimer(playerGravity);
@@ -309,5 +305,5 @@ window.onload = function() {
         start();
     }
     
-    };
+};
     
