@@ -18,6 +18,10 @@ window.onload = function() {
     
     //bounding box
     var boundBox = defineBoundBox(32, 32, Color.black);
+    var bboxUp;
+    var bboxDown;
+    var bboxLeft;
+    var bboxRight;
     var gridSpaceX = 1;
     var gridSpaceY = 1;
     
@@ -132,6 +136,8 @@ window.onload = function() {
             boundBox.setPosition(boundBox.getX(), gridSpaceY * 32 - 32);
             gridSpaceY--;
         }
+
+        createDrawnPreview(boundBox.getX(), boundBox.getY());
     }
     
     //make a flat world
@@ -321,6 +327,33 @@ window.onload = function() {
         }
 
         player.setSize(32, 64);
+    }
+
+    //creates a hollow square at boundbox pos
+    //necessary due to drawing order.. fix?
+    function createDrawnPreview(x, y) {
+        cleanGrid();
+
+        bboxUp = defineBoundBox(32, 1, Color.black);
+        bboxDown = defineBoundBox(32, 1, Color.black);
+        bboxLeft = defineBoundBox(1, 32, Color.black);
+        bboxRight = defineBoundBox(1, 32, Color.black);
+
+        bboxUp.setPosition(x, y);
+        bboxDown.setPosition(x, y + 32);
+        bboxLeft.setPosition(x, y);
+        bboxRight.setPosition(x + 32, y);
+    }
+
+    function cleanGrid() {
+        if (bboxUp)
+            remove(bboxUp);
+        if (bboxDown)
+            remove(bboxDown);
+        if (bboxLeft)
+            remove(bboxLeft);
+        if (bboxRight)
+            remove(bboxRight);
     }
     
     if (typeof start === 'function') {
