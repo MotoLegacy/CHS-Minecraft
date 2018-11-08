@@ -6,6 +6,7 @@ window.onload = function() {
             - smoothen, better collison check
         * Convert keyboard events to ints for cleaner hotbar select
         * Sun move clockwise, moon move counter clockwise
+        * make crouching less.. awkward
     */
     
     //block definitions
@@ -29,10 +30,13 @@ window.onload = function() {
     //plr
     var player;
     var playerSkin = "https://image.ibb.co/ft3XVq/steve.png";
+    var playerSkinCrouch = "https://image.ibb.co/hcu8YV/steve-Crouch.png";
     var playerSkinL = "https://image.ibb.co/krzVqq/steveL.png";
+    var playerSkinCrouchL = "https://image.ibb.co/nsi2tV/steve-Crouch-L.png";
     var pTempY = 0;
     var playerOnGround = false;
     var playerDir = 0;
+    var playerStance = 0;
     
     //hotbar
     var slotArr = [];
@@ -192,13 +196,10 @@ window.onload = function() {
     //put player into world
     function spawnPlayer(x, y, col) {
         player = new WebImage(playerSkin);
-        //player.setColor(col);
         player.setPosition(32, 32);
         add(player);
         
         setTimer(playerGravity, 10);
-        
-        //return temp;
     }
     
     //tick system: 3ms = 1 tick
@@ -229,24 +230,31 @@ window.onload = function() {
     function keyDown(e) {
         if (e.keyCode == Keyboard.SPACE) {
             playerJump(player.getY());
-            /*if (!playerOnGround)
-                return;
-            stopTimer(playerGravity);
-            pTempY = player.getX();
-            playerOnGround = false;
-            setTimer(playerJump, 10);*/
-            return;
-        } if (e.keyCode == Keyboard.letter('D')) {
+        } 
+        
+        if (e.keyCode == Keyboard.letter('D')) {
             player.move(3, 0);
             if (playerDir == 1) {
+                println('facing right');
                 playerDir = 0;
-                player.setImage(playerSkin);
+
+                if (!playerStance)
+                    player.setImage(playerSkin);
+                else
+                    player.setImage(playerSkinCrouch);
+                player.setSize(32, 64);
             }
         } else if (e.keyCode == Keyboard.letter('A')) {
             player.move(-3, 0);
             if (playerDir == 0) {
+                println('facing left');
                 playerDir = 1;
-                player.setImage(playerSkinL);
+
+                if (!playerStance)
+                    player.setImage(playerSkinL);
+                else
+                    player.setImage(playerSkinCrouchL);
+                player.setSize(32, 64);
             }
         }
         
@@ -298,7 +306,21 @@ window.onload = function() {
     }
     
     function changeStance() {
-        return;
+        playerStance = !playerStance;
+
+        if (!playerStance) {
+            switch(playerDir) {
+                case 0: player.setImage(playerSkin); break;
+                case 1: player.setImage(playerSkinL); break;
+            }
+        } else {
+            switch(playerDir) {
+                case 0: player.setImage(playerSkinCrouch); break;
+                case 1: player.setImage(playerSkinCrouchL); break;
+            }
+        }
+
+        player.setSize(32, 64);
     }
     
     if (typeof start === 'function') {

@@ -18,6 +18,10 @@ Left Click - Place Block
 0-9 - Switch Item 
 <br>
 A & D - Move Left & Right (Respectively)
+<br>
+Space - Jump
+<br>
+Shift - Crouch
 
 ---
 
