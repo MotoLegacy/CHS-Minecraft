@@ -62,7 +62,7 @@ window.onload = function() {
         createSky();
         generateTerrain();
         initHUD();
-        spawnPlayer();
+        spawnPlayer(32, 32);
         //spawnPlayer();
         mouseClickMethod(placeBlock);
         mouseMoveMethod(moveBoundBox);
@@ -200,9 +200,9 @@ window.onload = function() {
     }
     
     //put player into world
-    function spawnPlayer(x, y, col) {
+    function spawnPlayer(x, y) {
         player = new WebImage(playerSkin);
-        player.setPosition(32, 32);
+        player.setPosition(x, y);
         add(player);
         
         setTimer(playerGravity, 10);
@@ -346,14 +346,12 @@ window.onload = function() {
     }
 
     function cleanGrid() {
-        if (bboxUp)
+        if (bboxUp) {
             remove(bboxUp);
-        if (bboxDown)
             remove(bboxDown);
-        if (bboxLeft)
             remove(bboxLeft);
-        if (bboxRight)
             remove(bboxRight);
+        }
     }
     
     if (typeof start === 'function') {
