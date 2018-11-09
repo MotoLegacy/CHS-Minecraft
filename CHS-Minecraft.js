@@ -84,7 +84,7 @@ window.onload = function() {
     function startMenu() {
         drawMenuBG();
         createMenuButton("New World", getWidth()/2, 250);
-        //createMenuButton("Options", getWidth()/2, 200);
+        createMenuButton("Coming Soon..", getWidth()/2, 290); //soon to be skins!
         mouseMoveMethod(buttonCheck);
         mouseClickMethod(enterMenu);
     }
