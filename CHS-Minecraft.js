@@ -82,11 +82,15 @@ window.onload = function() {
     //---------------------------------------------------------
 
     function startMenu() {
+        mainMenu();
+        mouseMoveMethod(buttonCheck);
+    }
+    
+    function mainMenu() {
         drawMenuBG();
         createMenuButton("New World", getWidth()/2, 250);
-        createMenuButton("Coming Soon..", getWidth()/2, 290); //soon to be skins!
-        mouseMoveMethod(buttonCheck);
-        mouseClickMethod(enterMenu);
+        createMenuButton("Skins", getWidth()/2, 290);
+        mouseClickMethod(mainEnterMenu);
     }
 
     function buttonCheck(e) {
@@ -104,17 +108,53 @@ window.onload = function() {
         }
     }
 
-    function enterMenu(e) {
+    function mainEnterMenu(e) {
         switch(activeButton) {
             case 1: startGame(); break;
-            case 2: inputTest(); break;
+            case 2: cleanMenu(); skinMenu(); break;
             default: break;
         }
+    }
+    
+    function cleanMenu() {
+        menuButtons = [];
+        menuText = [];
+        activeButton = 0;
     }
 
     function inputTest() {
         var input = readLine("Enter text and check console: ");
         println("Player entered: " + input);
+    }
+    
+    function skinMenu() {
+        drawMenuBG();
+        createMenuButton("Skin Selection", getWidth()/2, 250);
+        createMenuButton("Custom Skin", getWidth()/2, 290);
+        createMenuButton("Back", getWidth()/2, 330);
+        mouseClickMethod(skinEnterMenu);
+    }
+
+    function skinEnterMenu(e) {
+        switch(activeButton) {
+            case 1: cleanMenu(); skinSMenu(); break;
+            case 2: break;
+            case 3: cleanMenu(); mainMenu(); break;
+            default: break;
+        }
+    }
+    
+    function skinSMenu() {
+        drawMenuBG();
+        createMenuButton("Back", getWidth()/2, 250);
+        mouseClickMethod(skinSEnterMenu);
+    }
+
+    function skinSEnterMenu(e) {
+        switch(activeButton) {
+            case 1: cleanMenu(); skinMenu(); break;
+            default: break;
+        }
     }
 
     function drawMenuBG() {
@@ -157,7 +197,7 @@ window.onload = function() {
     
     function placeBlock(e) {
         //if we don't have anything in our hand
-        if (blockInHand == HAND || blockInHand == undefined) 
+        if (blockInHand == HAND || blockInHand == undefined)
             return;
         
         var blk = new WebImage(getBlockTexture(blockInHand));
@@ -234,7 +274,7 @@ window.onload = function() {
         //create dirt layer
         for (var i = 0; i < 14*32; i += 32) {
             for (var j = 8; j < 12; j ++) {
-                generateBlock(DIRT, i, j*32);   
+                generateBlock(DIRT, i, j*32);
             }
         }
         //create bedrock layer
@@ -324,7 +364,7 @@ window.onload = function() {
     function keyDown(e) {
         if (e.keyCode == Keyboard.SPACE) {
             playerJump(player.getY());
-        } 
+        }
         
         if (e.keyCode == Keyboard.letter('D')) {
             player.move(3, 0);
