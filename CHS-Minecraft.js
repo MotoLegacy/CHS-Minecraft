@@ -8,6 +8,10 @@ window.onload = function() {
         * Sun move clockwise, moon move counter clockwise
         * make crouching less.. awkward
     */
+
+    /* ===========
+        GAME DEFS
+       =========== */
     
     //block definitions
     var blocks = [];
@@ -29,7 +33,7 @@ window.onload = function() {
     var blockInHand = HAND;
     
     //skybox colors
-    var skyDay = new Color(178, 253, 255);
+    var skyDay = new Color(157, 211, 255);
     
     //plr
     var player;
@@ -57,17 +61,92 @@ window.onload = function() {
     var moon;
     var sunAng = 0;
     var moonAng = 0;
+
+    /* ===========
+        MENU DEFS
+       =========== */
+
+    var menuButtons = [];
+    var menuText = [];
+    var buttonImg = "https://image.ibb.co/bXv8kA/button.png";
+    var buttonHiImg = "https://image.ibb.co/moDayV/buttonHi.png";
+    var logoImg = "https://image.ibb.co/kKx5iV/logo.png";
+    var activeButton = 0;
     
     function start() {
+        startMenu();
+    }
+
+    //---------------------------------------------------------
+    //menu stuffs
+    //---------------------------------------------------------
+
+    function startMenu() {
+        drawMenuBG();
+        createMenuButton("New World", getWidth()/2, 250);
+        //createMenuButton("Options", getWidth()/2, 200);
+        mouseMoveMethod(buttonCheck);
+        mouseClickMethod(enterMenu);
+    }
+
+    function buttonCheck(e) {
+        for (var i = 0; i < menuButtons.length; i++) {
+            if (e.getX() >= menuButtons[i].getX() && e.getX() <= menuButtons[i].getX() + 200 && e.getY() >= menuButtons[i].getY() && e.getY() <= menuButtons[i].getY() + 33) {
+                menuButtons[i].setImage(buttonHiImg);
+                menuText[i].setColor(Color.white);
+                activeButton = i + 1;
+            } else {
+                menuButtons[i].setImage(buttonImg);
+                menuText[i].setColor(Color.black);
+                if (activeButton == i + 1)
+                    activeButton = 0;
+            }
+        }
+    }
+
+    function enterMenu(e) {
+        switch(activeButton) {
+            case 1: startGame(); break;
+            default: break;
+        }
+    }
+
+    function drawMenuBG() {
+        var fakeSky = new Rectangle(getWidth(), getHeight());
+        fakeSky.setColor(skyDay);
+
+        var logo = new WebImage(logoImg);
+        logo.setPosition(10, 5);
+
+        add(fakeSky);
+        add(logo);
+    }
+
+    function createMenuButton(txt, x, y) {
+        var temp = new Text(txt, "20pt Arial");
+        temp.setPosition(x - temp.getWidth()/2, y);
+
+        var tempImg = new WebImage(buttonImg);
+        tempImg.setPosition(getWidth()/2 - 100, y - 27);
+
+        add(tempImg);
+        add(temp);
+        menuButtons.push(tempImg);
+        menuText.push(temp);
+    }
+
+    //---------------------------------------------------------
+    //in-game stuffs
+    //---------------------------------------------------------
+
+    function startGame() {
         createSky();
         generateTerrain();
         initHUD();
         spawnPlayer(32, 32);
-        //spawnPlayer();
         mouseClickMethod(placeBlock);
         mouseMoveMethod(moveBoundBox);
         keyDownMethod(keyDown);
-        //placeBlock(GRASS);
     }
     
     function placeBlock(e) {
@@ -211,13 +290,16 @@ window.onload = function() {
     //tick system: 3ms = 1 tick
     //ticks are used for anything time based
     function playerGravity() {
-        for (var i = 0; i < blocks.length; i ++) {
-            if (player.getY() + 64 >= blocks[i].getY()) {
-                playerOnGround = true;
-                return;
+        //checks every block
+        for (var i = 0; i < blocks.length; i++) {
+            for (var j = 0; j < 32; j++) {
+                if (player.getY() + 64 >= blocks[i].getY() && player.getX() == blocks[i].getX() + j) {
+                    playerOnGround = true;
+                    return;
+                }
             }
         }
-        player.move(0, 4);
+        player.move(0, 2);
     }
     
     //jump
