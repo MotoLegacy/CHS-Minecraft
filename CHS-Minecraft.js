@@ -107,8 +107,14 @@ window.onload = function() {
     function enterMenu(e) {
         switch(activeButton) {
             case 1: startGame(); break;
+            case 2: inputTest(); break;
             default: break;
         }
+    }
+
+    function inputTest() {
+        var input = readLine("Enter text and check console: ");
+        println("Player entered: " + input);
     }
 
     function drawMenuBG() {
