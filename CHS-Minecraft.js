@@ -94,9 +94,9 @@ window.onload = function() {
     
     function mainMenu() {
         drawMenuBG();
-        createMenuButton("New World", getWidth()/2, 250);
-        createMenuButton("Skins", getWidth()/2, 290);
-        createMenuButton("Disclaimer", getWidth()/2, 330);
+        createMenuButton("New World", getWidth()/2, 210);
+        createMenuButton("Skins", getWidth()/2, 250);
+        createMenuButton("Disclaimer", getWidth()/2, 290);
         mouseClickMethod(mainEnterMenu);
     }
 
@@ -183,9 +183,9 @@ window.onload = function() {
     
     function skinMenu() {
         drawMenuBG();
-        createMenuButton("Skin Selection", getWidth()/2, 250);
-        createMenuButton("Coming Soon..", getWidth()/2, 290);
-        createMenuButton("Back", getWidth()/2, 330);
+        createMenuButton("Skin Selection", getWidth()/2, 210);
+        createMenuButton("Coming Soon..", getWidth()/2, 250);
+        createMenuButton("Back", getWidth()/2, 290);
         mouseClickMethod(skinEnterMenu);
     }
 
