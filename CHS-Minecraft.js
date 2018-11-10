@@ -7,6 +7,8 @@ window.onload = function() {
         * Convert keyboard events to ints for cleaner hotbar select
         * Sun move clockwise, moon move counter clockwise
         * make crouching less.. awkward
+        * have all button registration one function (have var storing current menu)
+        * have splashes load from a file (saves lines)
     */
 
     /* ===========
@@ -72,6 +74,9 @@ window.onload = function() {
     var buttonHiImg = "https://image.ibb.co/moDayV/buttonHi.png";
     var logoImg = "https://image.ibb.co/kKx5iV/logo.png";
     var activeButton = 0;
+    var splash;
+    var splashSize = 20;
+    var splashState = 0;
     
     function start() {
         startMenu();
@@ -83,6 +88,7 @@ window.onload = function() {
 
     function startMenu() {
         mainMenu();
+        setTimer(splashChange, 30);
         mouseMoveMethod(buttonCheck);
     }
     
@@ -90,6 +96,7 @@ window.onload = function() {
         drawMenuBG();
         createMenuButton("New World", getWidth()/2, 250);
         createMenuButton("Skins", getWidth()/2, 290);
+        createMenuButton("Disclaimer", getWidth()/2, 330);
         mouseClickMethod(mainEnterMenu);
     }
 
@@ -112,6 +119,7 @@ window.onload = function() {
         switch(activeButton) {
             case 1: startGame(); break;
             case 2: cleanMenu(); skinMenu(); break;
+            case 3: cleanMenu(); disclaimerMenu(); break;
             default: break;
         }
     }
@@ -126,11 +134,57 @@ window.onload = function() {
         var input = readLine("Enter text and check console: ");
         println("Player entered: " + input);
     }
+
+    function addText(txt, size, col, x, y, cenx) {
+        var temp = new Text(txt, size);
+        temp.setColor(col);
+
+        if (cenx) {
+            x = getWidth()/2 - temp.getWidth()/2;
+        }
+
+        temp.setPosition(x, y);
+        add(temp);
+
+        return temp;
+    }
+
+    function disclaimerMenu() {
+        drawMenuBG();
+        disclaimerBG();
+        createMenuButton("Back", getWidth()/2, getHeight() - 16);
+        mouseClickMethod(enterMainMenu);
+
+        addText("DISCLAIMER", "20pt Arial", Color.white, 0, 40, 1)
+        addText("     2D-Minecraft is in no way affiliated with MojangAB, Microsoft, etc. This project", "15pt Arial", Color.white, 20, 70, 0);
+        addText("was created to demonstrate the capabilities of CodeHS' JavaScript Graphics API,", "15pt Arial", Color.white, 23, 90, 0);
+        addText("as well as point out various issues with the API, in hopes they may be altered in", "15pt Arial", Color.white, 23, 110, 0);
+        addText("the future.", "15pt Arial", Color.white, 18, 130, 0);
+        //
+        addText("     Many thanks to the Minecraft team for creating/adding on to such an amazing", "15pt Arial", Color.white, 23, 170, 0);
+        addText("project, and I cannot wait to see how the game further changes!", "15pt Arial", Color.white, 18, 190, 0);
+    }
+
+    function enterMainMenu() {
+        cleanMenu();
+        mainMenu();
+    }
+    
+    function disclaimerBG() {
+        var fakeSky = new Rectangle(getWidth(), getHeight());
+        fakeSky.setColor(skyDay);
+
+        var disclaim = new WebImage("https://image.ibb.co/jygf2q/disclaimer.png");
+        disclaim.setPosition(5, 5);
+        
+        add(fakeSky);
+        add(disclaim);
+    }
     
     function skinMenu() {
         drawMenuBG();
         createMenuButton("Skin Selection", getWidth()/2, 250);
-        createMenuButton("Custom Skin", getWidth()/2, 290);
+        createMenuButton("Coming Soon..", getWidth()/2, 290);
         createMenuButton("Back", getWidth()/2, 330);
         mouseClickMethod(skinEnterMenu);
     }
@@ -146,14 +200,55 @@ window.onload = function() {
     
     function skinSMenu() {
         drawMenuBG();
-        createMenuButton("Back", getWidth()/2, 250);
+        addSkin("https://image.ibb.co/g8c9Cq/steve.png", getWidth()/3 - 40, 100);
+        addSkin("https://image.ibb.co/nynO5A/tuxS.png", getWidth()/3 * 2 - 30, 100);
+        createMenuButton("Steve", getWidth()/3, 330);
+        createMenuButton("Tuxedo Steve", getWidth()/3 * 2, 330);
+        createMenuButton("Back", getWidth()/2, 370);
         mouseClickMethod(skinSEnterMenu);
+    }
+
+    function addSkin(img, x, y) {
+        var temp = new WebImage(img);
+        temp.setPosition(x, y);
+        temp.setSize(88, 176);
+        add(temp);
     }
 
     function skinSEnterMenu(e) {
         switch(activeButton) {
-            case 1: cleanMenu(); skinMenu(); break;
+            case 1: setSkin(0); cleanMenu(); skinMenu(); break;
+            case 2: setSkin(1); cleanMenu(); skinMenu(); break;
+            case 3: cleanMenu(); skinMenu(); break;
             default: break;
+        }
+    }
+
+    function setSkin(skin) {
+        switch(skin) {
+            case 0:
+                playerSkin = "https://image.ibb.co/ft3XVq/steve.png";
+                playerSkinCrouch = "https://image.ibb.co/hcu8YV/steve-Crouch.png";
+                playerSkinL = "https://image.ibb.co/krzVqq/steveL.png";
+                playerSkinCrouchL = "https://image.ibb.co/nsi2tV/steve-Crouch-L.png";
+                break;
+            case 1:
+                playerSkin = "https://image.ibb.co/hsZ0JV/steve.png";
+                playerSkinCrouch = "https://image.ibb.co/iVEECq/steve-Crouch.png";
+                playerSkinL = "https://image.ibb.co/mUZNXq/steveL.png";
+                playerSkinCrouchL = "https://image.ibb.co/ftQzdV/steve-Crouch-L.png";
+                break;
+        }
+    }
+
+    function getSplashText() {
+        spl = Randomizer.nextInt(1, 4)
+
+        switch(spl) {
+            case 1: return "As seen on TV!"; break;
+            case 2: return "Awesome!"; break;
+            case 3: return "100% pure!"; break;
+            case 4: return "May contain nuts!"; break;
         }
     }
 
@@ -162,10 +257,36 @@ window.onload = function() {
         fakeSky.setColor(skyDay);
 
         var logo = new WebImage(logoImg);
-        logo.setPosition(10, 5);
+        logo.setPosition(getWidth()/4, 10);
+
+        splash = new Text(getSplashText(), "20pt Arial");
+        splash.setColor(Color.yellow);
+        splash.setPosition((getWidth()/3 * 2) + splash.getWidth()/2-80, 100);
+        splash.rotate(-15);
 
         add(fakeSky);
         add(logo);
+        add(splash);
+    }
+
+    function splashChange() {
+        splash.setFont(splashSize + "pt Arial");
+        splash.setPosition((getWidth()/3 * 2) + splash.getWidth()/2-80, 100);
+
+        if (splashState == 0) {
+            splashSize += 0.15;
+
+            if (splashSize > 21)
+                splashState = 1;
+        }
+
+        if (splashState == 1) {
+            splashSize -= 0.15;
+
+            if (splashSize < 20) {
+                splashState = 0;
+            }
+        }
     }
 
     function createMenuButton(txt, x, y) {
@@ -173,7 +294,7 @@ window.onload = function() {
         temp.setPosition(x - temp.getWidth()/2, y);
 
         var tempImg = new WebImage(buttonImg);
-        tempImg.setPosition(getWidth()/2 - 100, y - 27);
+        tempImg.setPosition(x - 100, y - 27);
 
         add(tempImg);
         add(temp);
@@ -268,17 +389,17 @@ window.onload = function() {
     //make a flat world
     function generateTerrain() {
         //create grass layer
-        for (var i = 0; i < 14*32; i += 32) {
+        for (var i = 0; i < 24*32; i += 32) {
             generateBlock(GRASS, i, 7*32);
         }
         //create dirt layer
-        for (var i = 0; i < 14*32; i += 32) {
+        for (var i = 0; i < 24*32; i += 32) {
             for (var j = 8; j < 12; j ++) {
                 generateBlock(DIRT, i, j*32);
             }
         }
         //create bedrock layer
-        for (var i = 0; i < 14*32; i += 32) {
+        for (var i = 0; i < 24*32; i += 32) {
             generateBlock(BEDROCK, i, 12*32);
         }
     }
@@ -412,7 +533,7 @@ window.onload = function() {
     //heads up display
     function initHUD() {
         var hotbar = new WebImage("https://image.ibb.co/moOeiA/hotbar.png");
-        hotbar.setPosition(17, 430);
+        hotbar.setPosition(320 - 128, getHeight() - 45);
         add(hotbar);
         add(slot);
         drawHotbarItems();
@@ -423,14 +544,14 @@ window.onload = function() {
         for (var i = 0; i < 8; i++) {
             var temp = new WebImage(getBlockTexture(blockInSlot[i]));
             temp.setSize(25, 25);
-            temp.setPosition(27 + (40 * i), 440);
+            temp.setPosition((320 - 118) + (40 * i), getHeight() - 35);
             add(temp);
             slotArr.push(temp);
         }
     }
     
     function setHotbarSlot(slt) {
-        slot.setPosition(16 + (40 * slt), 428);
+        slot.setPosition((320 - 128) + (40 * slt), getHeight() - 46);
         hotbarSlot = slt;
         blockInHand = getBlockInSlot(hotbarSlot);
     }
