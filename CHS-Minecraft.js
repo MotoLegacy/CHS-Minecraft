@@ -9,7 +9,60 @@ window.onload = function() {
         * make crouching less.. awkward
         * have all button registration one function (have var storing current menu)
         * have splashes load from a file (saves lines)
+        * re-organize function locations
     */
+
+    /* ===================
+        CodeHS API ISSUES
+       =================== 
+
+        1. On slow connections, images will often 'pop-in' or not
+           load at all. This gives the impression that the game is
+           unstable. it's not. blame CodeHS. It'd be nice if in the
+           future CodeHS would offer a solution to this, or just have
+           a simple check if an image is cached/ready to use.
+           ...
+           CodeHS please.
+           ----------
+           Ex.
+
+           if (IMAGENAME.getChached()) { //boolean
+                //code to say "hey man keep doin what you're doin"
+           }
+
+        2. You cannot generate gradients. This makes the color-changing
+           skybox near impossible without the use of an image (which isn't
+           a good idea, see issue #1). I do not see why this is not a thing,
+           gradients are cool.
+           ---------
+           Ex. 
+
+           var gradient = new Gradient(START_COLOR, END_COLOR, SPACE_BEFORE_GRADIENT);
+           SHAPE.setGradient(gradient);
+    */
+
+    /* =================
+        IMAGE DEFITIONS
+       ================ */
+    var IMG_STEVE = "https://image.ibb.co/ft3XVq/steve.png";
+    var IMG_STEVECROUCH = "https://image.ibb.co/hcu8YV/steve-Crouch.png";
+    var IMG_LSTEVE = "https://image.ibb.co/krzVqq/steveL.png";
+    var IMG_LSTEVECROUCH = "https://image.ibb.co/nsi2tV/steve-Crouch-L.png";
+    var IMG_HOTBARSLOT = "https://image.ibb.co/i2amVq/slot.png";
+    var IMG_MENUBUTTON = "https://image.ibb.co/bXv8kA/button.png";
+    var IMG_MENUBUTTONACTIVE = "https://image.ibb.co/moDayV/buttonHi.png";
+    var IMG_MENULOGO = "https://image.ibb.co/kKx5iV/logo.png";
+    var IMG_MENUDISCLAIMER = "https://image.ibb.co/jygf2q/disclaimer.png";
+    var IMG_MENUSTEVE = "https://image.ibb.co/g8c9Cq/steve.png";
+    var IMG_MENUTUX = "https://image.ibb.co/nynO5A/tuxS.png";
+    var IMG_TUX = "https://image.ibb.co/hsZ0JV/steve.png";
+    var IMG_TUXCROUCH = "https://image.ibb.co/iVEECq/steve-Crouch.png";
+    var IMG_LTUX = "https://image.ibb.co/mUZNXq/steveL.png";
+    var IMG_LTUXCROUCH = "https://image.ibb.co/ftQzdV/steve-Crouch-L.png";
+    var IMG_HOTBAR = "https://image.ibb.co/moOeiA/hotbar.png";
+    var IMG_BLOCKGRASS = "https://image.ibb.co/eudD3A/grass-side.png";
+    var IMG_BLOCKDIRT = "https://image.ibb.co/ez6SVq/dirt.png";
+    var IMG_BLOCKBEDROCK = "https://image.ibb.co/kHeEAq/bedrock.png";
 
     /* ===========
         GAME DEFS
@@ -39,10 +92,10 @@ window.onload = function() {
     
     //plr
     var player;
-    var playerSkin = "https://image.ibb.co/ft3XVq/steve.png";
-    var playerSkinCrouch = "https://image.ibb.co/hcu8YV/steve-Crouch.png";
-    var playerSkinL = "https://image.ibb.co/krzVqq/steveL.png";
-    var playerSkinCrouchL = "https://image.ibb.co/nsi2tV/steve-Crouch-L.png";
+    var playerSkin = IMG_STEVE;
+    var playerSkinCrouch = IMG_STEVECROUCH;
+    var playerSkinL = IMG_LSTEVE;
+    var playerSkinCrouchL = IMG_LSTEVECROUCH;
     var pTempY = 0;
     var playerOnGround = false;
     var playerDir = 0;
@@ -50,7 +103,7 @@ window.onload = function() {
     
     //hotbar
     var slotArr = [];
-    var slot = new WebImage("https://image.ibb.co/i2amVq/slot.png");
+    var slot = new WebImage(IMG_HOTBARSLOT);
     var hotbarSlot = 0;
     var blockInSlot = [];
     blockInSlot.push(GRASS);
@@ -70,9 +123,6 @@ window.onload = function() {
 
     var menuButtons = [];
     var menuText = [];
-    var buttonImg = "https://image.ibb.co/bXv8kA/button.png";
-    var buttonHiImg = "https://image.ibb.co/moDayV/buttonHi.png";
-    var logoImg = "https://image.ibb.co/kKx5iV/logo.png";
     var activeButton = 0;
     var splash;
     var splashSize = 20;
@@ -93,6 +143,7 @@ window.onload = function() {
     }
     
     function mainMenu() {
+        drawSplash();
         drawMenuBG();
         createMenuButton("New World", getWidth()/2, 210);
         createMenuButton("Skins", getWidth()/2, 250);
@@ -103,11 +154,11 @@ window.onload = function() {
     function buttonCheck(e) {
         for (var i = 0; i < menuButtons.length; i++) {
             if (e.getX() >= menuButtons[i].getX() && e.getX() <= menuButtons[i].getX() + 200 && e.getY() >= menuButtons[i].getY() && e.getY() <= menuButtons[i].getY() + 33) {
-                menuButtons[i].setImage(buttonHiImg);
+                menuButtons[i].setImage(IMG_MENUBUTTONACTIVE);
                 menuText[i].setColor(Color.white);
                 activeButton = i + 1;
             } else {
-                menuButtons[i].setImage(buttonImg);
+                menuButtons[i].setImage(IMG_MENUBUTTON);
                 menuText[i].setColor(Color.black);
                 if (activeButton == i + 1)
                     activeButton = 0;
@@ -174,7 +225,7 @@ window.onload = function() {
         var fakeSky = new Rectangle(getWidth(), getHeight());
         fakeSky.setColor(skyDay);
 
-        var disclaim = new WebImage("https://image.ibb.co/jygf2q/disclaimer.png");
+        var disclaim = new WebImage(IMG_MENUDISCLAIMER);
         disclaim.setPosition(5, 5);
         
         add(fakeSky);
@@ -200,8 +251,8 @@ window.onload = function() {
     
     function skinSMenu() {
         drawMenuBG();
-        addSkin("https://image.ibb.co/g8c9Cq/steve.png", getWidth()/3 - 40, 100);
-        addSkin("https://image.ibb.co/nynO5A/tuxS.png", getWidth()/3 * 2 - 30, 100);
+        addSkin(IMG_MENUSTEVE, getWidth()/3 - 40, 100);
+        addSkin(IMG_MENUTUX, getWidth()/3 * 2 - 30, 100);
         createMenuButton("Steve", getWidth()/3, 330);
         createMenuButton("Tuxedo Steve", getWidth()/3 * 2, 330);
         createMenuButton("Back", getWidth()/2, 370);
@@ -227,16 +278,16 @@ window.onload = function() {
     function setSkin(skin) {
         switch(skin) {
             case 0:
-                playerSkin = "https://image.ibb.co/ft3XVq/steve.png";
-                playerSkinCrouch = "https://image.ibb.co/hcu8YV/steve-Crouch.png";
-                playerSkinL = "https://image.ibb.co/krzVqq/steveL.png";
-                playerSkinCrouchL = "https://image.ibb.co/nsi2tV/steve-Crouch-L.png";
+                playerSkin = IMG_STEVE;
+                playerSkinCrouch = IMG_STEVECROUCH;
+                playerSkinL = IMG_LSTEVE;
+                playerSkinCrouchL = IMG_LSTEVECROUCH;
                 break;
             case 1:
-                playerSkin = "https://image.ibb.co/hsZ0JV/steve.png";
-                playerSkinCrouch = "https://image.ibb.co/iVEECq/steve-Crouch.png";
-                playerSkinL = "https://image.ibb.co/mUZNXq/steveL.png";
-                playerSkinCrouchL = "https://image.ibb.co/ftQzdV/steve-Crouch-L.png";
+                playerSkin = IMG_TUX;
+                playerSkinCrouch = IMG_TUXCROUCH;
+                playerSkinL = IMG_LTUX;
+                playerSkinCrouchL = IMG_LTUXCROUCH;
                 break;
         }
     }
@@ -256,17 +307,19 @@ window.onload = function() {
         var fakeSky = new Rectangle(getWidth(), getHeight());
         fakeSky.setColor(skyDay);
 
-        var logo = new WebImage(logoImg);
+        var logo = new WebImage(IMG_MENULOGO);
         logo.setPosition(getWidth()/4, 10);
-
-        splash = new Text(getSplashText(), "20pt Arial");
-        splash.setColor(Color.yellow);
-        splash.setPosition((getWidth()/3 * 2) + splash.getWidth()/2-80, 100);
-        splash.rotate(-15);
 
         add(fakeSky);
         add(logo);
         add(splash);
+    }
+
+    function drawSplash() {
+        splash = new Text(getSplashText(), "20pt Arial");
+        splash.setColor(Color.yellow);
+        splash.setPosition((getWidth()/3 * 2) + splash.getWidth()/2-80, 100);
+        splash.rotate(-15);
     }
 
     function splashChange() {
@@ -293,7 +346,7 @@ window.onload = function() {
         var temp = new Text(txt, "20pt Arial");
         temp.setPosition(x - temp.getWidth()/2, y);
 
-        var tempImg = new WebImage(buttonImg);
+        var tempImg = new WebImage(IMG_MENUBUTTON);
         tempImg.setPosition(x - 100, y - 27);
 
         add(tempImg);
@@ -348,9 +401,9 @@ window.onload = function() {
     
     function getBlockTexture(block) {
         switch(block) {
-            case GRASS: return "https://image.ibb.co/eudD3A/grass-side.png";
-            case DIRT: return "https://image.ibb.co/ez6SVq/dirt.png";
-            case BEDROCK: return "https://image.ibb.co/kHeEAq/bedrock.png";
+            case GRASS: return IMG_BLOCKGRASS;
+            case DIRT: return IMG_BLOCKDIRT;
+            case BEDROCK: return IMG_BLOCKBEDROCK;
             default: return "";
         }
     }
@@ -532,7 +585,7 @@ window.onload = function() {
     
     //heads up display
     function initHUD() {
-        var hotbar = new WebImage("https://image.ibb.co/moOeiA/hotbar.png");
+        var hotbar = new WebImage(IMG_HOTBAR);
         hotbar.setPosition(320 - 128, getHeight() - 45);
         add(hotbar);
         add(slot);
