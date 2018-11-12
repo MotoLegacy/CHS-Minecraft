@@ -529,21 +529,76 @@ window.onload = function() {
         
         playerOnGround = false;
         
-        for (i = 0; i < startY + 8; i += 2) {
+        for (i = 0; i < startY + 12; i += 2) {
             player.move(0, -0.5);
+        }
+    }
+
+    //checks if x-pos is clear
+    function xClear(dir) {
+        if (!dir) { //right
+            var xpos = player.getX() + 32;
+
+            for (var i = 0; i < blocks.length; i++) {
+                for (var j = 0; j < 64; j++) {
+                    if (blocks[i].getX() <= xpos - 1 && blocks[i].getX() + 32 >= xpos - 1) { //x check
+                    
+                        if ((blocks[i].getY() < player.getY() + j) && (blocks[i].getY() + 32 > player.getY() + j)) {
+                            return false;
+                        }
+
+                    }
+                }
+            }
+
+            return true;
+        } else {
+            var xpos = player.getX();
+
+            for (var i = 0; i < blocks.length; i++) {
+                for (var j = 0; j < 64; j++) {
+                    if (blocks[i].getX() + 32 == xpos) { //xcheck
+
+                        if ((blocks[i].getY() < player.getY() + j) && (blocks[i].getY() + 32 > player.getY() + j)) {
+                            return false;
+                        }
+    
+                    }
+                }
+                
+            }
+
+            return true;
+        }
+    }
+
+    function movePlayer(x, y) {
+        if (x > 0) {
+            for (var i = 0; i < x; i++) {
+                if (xClear(0)) {
+                    player.move(1, 0);
+                }
+            }
+        } else {
+            for (var i = 0; i < -x; i++) {
+                if (xClear(1)) {
+                    player.move(-1, 0);
+                }
+            }
         }
     }
     
     //input handling
     function keyDown(e) {
         if (e.keyCode == Keyboard.SPACE) {
-            playerJump(player.getY());
+            //playerJump(player.getY());
+            return;
         }
         
         if (e.keyCode == Keyboard.letter('D')) {
-            player.move(3, 0);
+            //player.move(3, 0);
+            movePlayer(3, 0);
             if (playerDir == 1) {
-                println('facing right');
                 playerDir = 0;
 
                 if (!playerStance)
@@ -553,9 +608,8 @@ window.onload = function() {
                 player.setSize(32, 64);
             }
         } else if (e.keyCode == Keyboard.letter('A')) {
-            player.move(-3, 0);
+            movePlayer(-3, 0);
             if (playerDir == 0) {
-                println('facing left');
                 playerDir = 1;
 
                 if (!playerStance)
