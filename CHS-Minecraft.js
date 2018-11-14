@@ -5,7 +5,6 @@ window.onload = function() {
         * Change jumping
             - smoothen, better collison check
         * Convert keyboard events to ints for cleaner hotbar select
-        * Sun move clockwise, moon move counter clockwise
         * make crouching less.. awkward
         * have all button registration one function (have var storing current menu)
         * have splashes load from a file (saves lines)
@@ -395,6 +394,7 @@ window.onload = function() {
     //in-game stuffs
     //---------------------------------------------------------
 
+    //Start that boi!
     function startGame() {
         createSky();
         generateTerrain();
@@ -405,45 +405,8 @@ window.onload = function() {
         keyDownMethod(keyDown);
     }
 
-    function breakBlock() {
-        for (var i = 0; i < blocks.length; i++) {
-            if (blocks[i].getX() == boundBox.getX() && blocks[i].getY() == boundBox.getY()) {
-                remove(blocks[i]);
-                blocks.splice(i, 1);
-            }
-        }
-    }
     
-    function placeBlock(e) {
-        //if we don't have anything in our hand
-        if (blockInHand == HAND || blockInHand == undefined)
-            return;
-        
-        var blk = new WebImage(getBlockTexture(blockInHand));
-        blk.setPosition(boundBox.getX(), boundBox.getY());
-        blk.setSize(32, 32);
-        add(blk);
-        
-        //check if block is inside player
-        if ((blk.getX() == player.getX() && player.getY() == blk.getY())
-            || (blk.getX() == player.getX() && player.getY() + 32 == blk.getY())) {
-            
-            remove(blk);
-            return;
-        }
-        
-        //check if there's already a block in space
-        for (var i = 0; i < blocks.length; i++) {
-            if (blk.getX() == blocks[i].getX()
-            && blk.getY() == blocks[i].getY()) {
-                remove(blk);
-                return;
-            }
-        }
-        
-        blocks.push(blk);
-    }
-    
+    //Return the texture name for blocks
     function getBlockTexture(block) {
         switch(block) {
             case GRASS: return IMG_BLOCKGRASS;
@@ -452,68 +415,54 @@ window.onload = function() {
             default: return "";
         }
     }
-    
-    function defineBoundBox(wid, hei, col) {
-        var temp = new Rectangle(wid, hei);
-        temp.setColor(col);
-        temp.setPosition(0, 0); //place in grid space 1
-        add(temp);
-        
-        return temp;
-    }
-    
-    //this serves as our fake grid, we move our bounding/collison box
-    //to prevent block overlapping. fun stuff.
-    function moveBoundBox(e) {
-        if (e.getX() > (gridSpaceX * 32)) {
-            boundBox.setPosition(gridSpaceX * 32, boundBox.getY());
-            gridSpaceX++;
-        } else if (e.getX() < (gridSpaceX * 32)) {
-            boundBox.setPosition((gridSpaceX * 32) - 32, boundBox.getY());
-            gridSpaceX--;
-        }
-        
-        if (e.getY() > (gridSpaceY * 32)) {
-            boundBox.setPosition(boundBox.getX(), gridSpaceY * 32);
-            gridSpaceY++;
-        } else if (e.getY() < (gridSpaceY * 32)) {
-            boundBox.setPosition(boundBox.getX(), gridSpaceY * 32 - 32);
-            gridSpaceY--;
-        }
 
-        createDrawnPreview(boundBox.getX(), boundBox.getY());
-    }
-    
-    //make a flat world
+    /* ====================
+        ENVIRONMENT STUFFS
+       ====================
+    Sky, terrain generation, sun & moon (good game)
+    ------------------------------------------------*/
+
+    //Generate a normal, flat terrain
     function generateTerrain() {
-        //create grass layer
+        //Grass layer
         for (var i = 0; i < 24*32; i += 32) {
             generateBlock(GRASS, i, 7*32);
         }
-        //create dirt layer
+
+        //Dirt layer
         for (var i = 0; i < 24*32; i += 32) {
             for (var j = 8; j < 12; j ++) {
                 generateBlock(DIRT, i, j*32);
             }
         }
-        //create bedrock layer
+
+        //Bedrock layer
         for (var i = 0; i < 24*32; i += 32) {
             generateBlock(BEDROCK, i, 12*32);
         }
     }
+
+    //Place the blocks needed for world terrain individually, push to array
+    function generateBlock(type, x, y) {
+        var blk = new WebImage(getBlockTexture(type));
+        blk.setPosition(x, y);
+        blk.setSize(32, 32);
+        blocks.push(blk);
+        add(blk);
+    }
     
-    //make a "nice" sky
+    //Sky, Sun, Moon
     function createSky() {
         day = new Rectangle(getWidth(), getHeight() - 2*32);
         day.setPosition(0, 0);
         day.setColor(skyDay);
         
         sun = new Rectangle(50, 50);
-        sun.setPosition(getWidth()/2 - 50, 30);
+        sun.setPosition(getWidth()/2, 30);
         sun.setColor(Color.yellow);
         
         moon = new Rectangle(50, 50);
-        moon.setPosition(getWidth()/2 - 50, 800);
+        moon.setPosition(getWidth()/2, 800);
         moon.setColor(Color.white);
         setTimer(skyChange, 50);
         
@@ -527,59 +476,21 @@ window.onload = function() {
         add(moon);
     }
     
+    //Make the sun and moon revolve around the world.
     function skyChange() {
-        sunAng += 3 * Math.PI / 180;
-        moonAng -= 3 * Math.PI / 180;
-        sun.setPosition(sun.getX() + 20 * Math.cos(sunAng), sun.getY() + 20 * Math.sin(sunAng));
-        moon.setPosition(moon.getX() + 20 * Math.cos(moonAng), moon.getY() + 20 * Math.sin(moonAng));
-    }
-    
-    //place blocks created by generation, instead of hand
-    function generateBlock(type, x, y) {
-        var blk = new WebImage(getBlockTexture(type));
-        blk.setPosition(x, y);
-        blk.setSize(32, 32);
-        blocks.push(blk);
-        add(blk);
-    }
-    
-    //put player into world
-    function spawnPlayer(x, y) {
-        player = new WebImage(playerSkin);
-        player.setPosition(x, y);
-        add(player);
-        
-        setTimer(playerGravity, 10);
-    }
-    
-    //tick system: 3ms = 1 tick
-    //ticks are used for anything time based
-    function playerGravity() {
-        //checks every block
-        for (var i = 0; i < blocks.length; i++) {
-            for (var j = 0; j < 32; j++) {
-                if (player.getY() + 64 >= blocks[i].getY() && player.getX() == blocks[i].getX() + j) {
-                    playerOnGround = true;
-                    return;
-                }
-            }
-        }
-        player.move(0, 2);
-    }
-    
-    //jump
-    function playerJump(startY) {
-        if (!playerOnGround)
-            return;
-        
-        playerOnGround = false;
-        
-        for (i = 0; i < startY + 12; i += 2) {
-            player.move(0, -0.5);
-        }
+        sunAng -= 3 * Math.PI / 180;
+        moonAng += 3 * Math.PI / 180;
+        sun.setPosition(sun.getX() - 25 * Math.cos(sunAng), sun.getY() - 20 * Math.sin(sunAng));
+        moon.setPosition(moon.getX() - 25 * Math.cos(moonAng), moon.getY() - 20 * Math.sin(moonAng));
     }
 
-    //checks if x-pos is clear
+    /* ====================
+        COLLISON DETECTION
+       ==================== 
+    The thing everyone hates but everyone's gotta do!
+    --------------------------------------------------*/
+
+    //Checks if the X-Position is clear
     function xClear(dir) {
         if (!dir) { //right
             var xpos = player.getX() + 32;
@@ -617,6 +528,54 @@ window.onload = function() {
         }
     }
 
+    /* ==================
+        PLAYER FUNCTIONS
+       ==================
+    Stance, jumping, gravity, blocks
+    ---------------------------------*/
+
+    //Remove block from world and array
+    function breakBlock() {
+        for (var i = 0; i < blocks.length; i++) {
+            if (blocks[i].getX() == boundBox.getX() && blocks[i].getY() == boundBox.getY()) {
+                remove(blocks[i]);
+                blocks.splice(i, 1);
+            }
+        }
+    }
+    
+    //Draw block, add to array
+    function placeBlock(e) {
+        //if we don't have anything in our hand
+        if (blockInHand == HAND || blockInHand == undefined)
+            return;
+        
+        var blk = new WebImage(getBlockTexture(blockInHand));
+        blk.setPosition(boundBox.getX(), boundBox.getY());
+        blk.setSize(32, 32);
+        add(blk);
+        
+        //check if block is inside player
+        if ((blk.getX() == player.getX() && player.getY() == blk.getY())
+            || (blk.getX() == player.getX() && player.getY() + 32 == blk.getY())) {
+            
+            remove(blk);
+            return;
+        }
+        
+        //check if there's already a block in space
+        for (var i = 0; i < blocks.length; i++) {
+            if (blk.getX() == blocks[i].getX()
+            && blk.getY() == blocks[i].getY()) {
+                remove(blk);
+                return;
+            }
+        }
+        
+        blocks.push(blk);
+    }
+
+    //Check that spot is clear before moving
     function movePlayer(x, y) {
         if (x > 0) {
             for (var i = 0; i < x; i++) {
@@ -633,7 +592,162 @@ window.onload = function() {
         }
     }
     
-    //input handling
+    //Crouch 'n' stuff
+    function changeStance() {
+        playerStance = !playerStance;
+
+        if (!playerStance) {
+            switch(playerDir) {
+                case 0: player.setImage(playerSkin); break;
+                case 1: player.setImage(playerSkinL); break;
+            }
+        } else {
+            switch(playerDir) {
+                case 0: player.setImage(playerSkinCrouch); break;
+                case 1: player.setImage(playerSkinCrouchL); break;
+            }
+        }
+
+        player.setSize(32, 64);
+    }
+
+    //Spawn the player into the world!
+    function spawnPlayer(x, y) {
+        player = new WebImage(playerSkin);
+        player.setPosition(x, y);
+        add(player);
+        
+        setTimer(playerGravity, 10);
+    }
+    
+    //Progressively falling player
+    function playerGravity() {
+        //checks every block
+        for (var i = 0; i < blocks.length; i++) {
+            for (var j = 0; j < 32; j++) {
+                if (player.getY() + 64 >= blocks[i].getY() && player.getX() == blocks[i].getX() + j) {
+                    playerOnGround = true;
+                    return;
+                }
+            }
+        }
+        player.move(0, 2);
+    }
+    
+    //Chris Cross will make you jump! Jump! Jump!
+    function playerJump(startY) {
+        if (!playerOnGround)
+            return;
+        
+        playerOnGround = false;
+        
+        for (i = 0; i < startY + 12; i += 2) {
+            player.move(0, -0.5);
+        }
+    }
+
+
+    /* ===============
+        GUI FUNCTIONS
+       =============== 
+    Hotbar, heads up display, etc.
+    -------------------------------*/
+
+    //Initialize the Heads-Up Display
+    function initHUD() {
+        var hotbar = new WebImage(IMG_HOTBAR);
+        hotbar.setPosition(320 - 128, getHeight() - 45);
+        add(hotbar);
+        add(slot);
+        drawHotbarItems();
+        setHotbarSlot(0);
+    }
+    
+    //Draw the blocks in their designated slots
+    function drawHotbarItems() {
+        for (var i = 0; i < 8; i++) {
+            var temp = new WebImage(getBlockTexture(blockInSlot[i]));
+            temp.setSize(25, 25);
+            temp.setPosition((320 - 118) + (40 * i), getHeight() - 35);
+            add(temp);
+            slotArr.push(temp);
+        }
+    }
+    
+    //Figure out which block is in each slot
+    function setHotbarSlot(slt) {
+        slot.setPosition((320 - 128) + (40 * slt), getHeight() - 46);
+        hotbarSlot = slt;
+        blockInHand = getBlockInSlot(hotbarSlot);
+    }
+    
+    function getBlockInSlot(slt) {
+        return blockInSlot[slt];
+    }
+
+    //Hollow box that follows cursor to indicate block positions
+    function createDrawnPreview(x, y) {
+        cleanGrid();
+
+        bboxUp = defineBoundBox(32, 1, Color.black);
+        bboxDown = defineBoundBox(32, 1, Color.black);
+        bboxLeft = defineBoundBox(1, 32, Color.black);
+        bboxRight = defineBoundBox(1, 32, Color.black);
+
+        bboxUp.setPosition(x, y);
+        bboxDown.setPosition(x, y + 32);
+        bboxLeft.setPosition(x, y);
+        bboxRight.setPosition(x + 32, y);
+    }
+
+    //Remove lines to re-draw
+    function cleanGrid() {
+        if (bboxUp) {
+            remove(bboxUp);
+            remove(bboxDown);
+            remove(bboxLeft);
+            remove(bboxRight);
+        }
+    }
+
+    //Create a new bounding box
+    function defineBoundBox(wid, hei, col) {
+        var temp = new Rectangle(wid, hei);
+        temp.setColor(col);
+        temp.setPosition(0, 0);
+        add(temp);
+        
+        return temp;
+    }
+
+    //ACTUAL fake grid, for determine whether things would overlap. (32px = 1 block)
+    function moveBoundBox(e) {
+        if (e.getX() > (gridSpaceX * 32)) {
+            boundBox.setPosition(gridSpaceX * 32, boundBox.getY());
+            gridSpaceX++;
+        } else if (e.getX() < (gridSpaceX * 32)) {
+            boundBox.setPosition((gridSpaceX * 32) - 32, boundBox.getY());
+            gridSpaceX--;
+        }
+        
+        if (e.getY() > (gridSpaceY * 32)) {
+            boundBox.setPosition(boundBox.getX(), gridSpaceY * 32);
+            gridSpaceY++;
+        } else if (e.getY() < (gridSpaceY * 32)) {
+            boundBox.setPosition(boundBox.getX(), gridSpaceY * 32 - 32);
+            gridSpaceY--;
+        }
+
+        createDrawnPreview(boundBox.getX(), boundBox.getY());
+    }
+
+    /* ================
+        MISC FUNCTIONS
+       ================ 
+    Shapes, Input, etc. is here
+    ----------------------------*/
+
+    //when a key is pressed
     function keyDown(e) {
         if (e.keyCode == Keyboard.SPACE) {
             //playerJump(player.getY());
@@ -671,9 +785,9 @@ window.onload = function() {
 
         if (e.keyCode == Keyboard.CTRL) {
             if (blockAction) {
-                mouseClickMethod(breakBlock); 
+                mouseClickMethod(placeBlock); 
             } else {
-                mouseClickMethod(placeBlock);
+                mouseClickMethod(breakBlock);
             }
 
             blockAction = !blockAction;
@@ -690,79 +804,7 @@ window.onload = function() {
             case Keyboard.letter('8'): setHotbarSlot(7); break;
             case Keyboard.letter('9'): setHotbarSlot(8); break;
         }
-    }
-    
-    //heads up display
-    function initHUD() {
-        var hotbar = new WebImage(IMG_HOTBAR);
-        hotbar.setPosition(320 - 128, getHeight() - 45);
-        add(hotbar);
-        add(slot);
-        drawHotbarItems();
-        setHotbarSlot(0);
-    }
-    
-    function drawHotbarItems() {
-        for (var i = 0; i < 8; i++) {
-            var temp = new WebImage(getBlockTexture(blockInSlot[i]));
-            temp.setSize(25, 25);
-            temp.setPosition((320 - 118) + (40 * i), getHeight() - 35);
-            add(temp);
-            slotArr.push(temp);
-        }
-    }
-    
-    function setHotbarSlot(slt) {
-        slot.setPosition((320 - 128) + (40 * slt), getHeight() - 46);
-        hotbarSlot = slt;
-        blockInHand = getBlockInSlot(hotbarSlot);
-    }
-    
-    function getBlockInSlot(slt) {
-        return blockInSlot[slt];
-    }
-    
-    function changeStance() {
-        playerStance = !playerStance;
 
-        if (!playerStance) {
-            switch(playerDir) {
-                case 0: player.setImage(playerSkin); break;
-                case 1: player.setImage(playerSkinL); break;
-            }
-        } else {
-            switch(playerDir) {
-                case 0: player.setImage(playerSkinCrouch); break;
-                case 1: player.setImage(playerSkinCrouchL); break;
-            }
-        }
-
-        player.setSize(32, 64);
-    }
-
-    //creates a hollow square at boundbox pos
-    //necessary due to drawing order.. fix?
-    function createDrawnPreview(x, y) {
-        cleanGrid();
-
-        bboxUp = defineBoundBox(32, 1, Color.black);
-        bboxDown = defineBoundBox(32, 1, Color.black);
-        bboxLeft = defineBoundBox(1, 32, Color.black);
-        bboxRight = defineBoundBox(1, 32, Color.black);
-
-        bboxUp.setPosition(x, y);
-        bboxDown.setPosition(x, y + 32);
-        bboxLeft.setPosition(x, y);
-        bboxRight.setPosition(x + 32, y);
-    }
-
-    function cleanGrid() {
-        if (bboxUp) {
-            remove(bboxUp);
-            remove(bboxDown);
-            remove(bboxLeft);
-            remove(bboxRight);
-        }
     }
     
     if (typeof start === 'function') {
