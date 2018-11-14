@@ -15,6 +15,8 @@ As of now, all you can do is watch the sun and moon fly by, place some dirt and 
 ## Controls
 Left Click - Place Block 
 <br>
+Control - Switch Block Action
+<br>
 0-9 - Switch Item 
 <br>
 A & D - Move Left & Right (Respectively)
