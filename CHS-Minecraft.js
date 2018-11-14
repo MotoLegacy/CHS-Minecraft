@@ -14,7 +14,7 @@ window.onload = function() {
 
     /* ===================
         CodeHS API ISSUES
-       =================== 
+       ===================
 
         1. On slow connections, images will often 'pop-in' or not
            load at all. This gives the impression that the game is
@@ -35,7 +35,7 @@ window.onload = function() {
            a good idea, see issue #1). I do not see why this is not a thing,
            gradients are cool.
            ---------
-           Ex. 
+           Ex.
 
            var gradient = new Gradient(START_COLOR, END_COLOR, SPACE_BEFORE_GRADIENT);
            SHAPE.setGradient(gradient);
@@ -117,6 +117,15 @@ window.onload = function() {
     var sunAng = 0;
     var moonAng = 0;
 
+    //input
+    blockAction = 0;
+
+    /* ================
+        WORLD GEN DEFS
+       ================ */
+    
+    var world_gamemode = 0;
+
     /* ===========
         MENU DEFS
        =========== */
@@ -130,6 +139,7 @@ window.onload = function() {
     
     function start() {
         startMenu();
+        //splashArr = readSplashes();
     }
 
     //---------------------------------------------------------
@@ -138,7 +148,7 @@ window.onload = function() {
 
     function startMenu() {
         mainMenu();
-        setTimer(splashChange, 30);
+        setTimer(splashChange, 15);
         mouseMoveMethod(buttonCheck);
     }
     
@@ -168,7 +178,7 @@ window.onload = function() {
 
     function mainEnterMenu(e) {
         switch(activeButton) {
-            case 1: startGame(); break;
+            case 1: /*cleanMenu(); worldMenu();*/startGame(); break;
             case 2: cleanMenu(); skinMenu(); break;
             case 3: cleanMenu(); disclaimerMenu(); break;
             default: break;
@@ -231,6 +241,11 @@ window.onload = function() {
         add(fakeSky);
         add(disclaim);
     }
+
+    function worldMenu() {
+        drawMenuBG();
+        createMenuButton("Survival", getWidth()/2, 210);
+    }
     
     function skinMenu() {
         drawMenuBG();
@@ -292,15 +307,36 @@ window.onload = function() {
         }
     }
 
-    function getSplashText() {
-        spl = Randomizer.nextInt(1, 4)
+    function readSplashes(){
+        // read text from URL location
+        var request = new XMLHttpRequest();
+        request.open('GET', 'http://ibowling.codehs.me/projects/2d-minecraft/splashes.txt', true);
+        request.send(null);
 
-        switch(spl) {
-            case 1: return "As seen on TV!"; break;
-            case 2: return "Awesome!"; break;
-            case 3: return "100% pure!"; break;
-            case 4: return "May contain nuts!"; break;
+        request.onreadystatechange = function () {
+            if (request.readyState === 4 && request.status === 200) {
+                var type = request.getResponseHeader('Content-Type');
+                if (type.indexOf("text") !== 1) {
+                    /*var stuff = request.responseText;
+                    return stuff.split(/\r\n|\r|\n/g);*/
+                    //println(splashArr);
+                    return;
+                }
+            }
         }
+    }
+
+    function setSplashes(spl) {
+        /*splashArr = spl.split(/\r\n|\r|\n/g);
+        println(splashArr[50]);*/
+        return;
+    }
+
+    function getSplashText() {
+        //spl = Randomizer.nextInt(1, 361);
+        //println(splashArr[40]);
+
+        return "Alpha!";
     }
 
     function drawMenuBG() {
@@ -318,23 +354,23 @@ window.onload = function() {
     function drawSplash() {
         splash = new Text(getSplashText(), "20pt Arial");
         splash.setColor(Color.yellow);
-        splash.setPosition((getWidth()/3 * 2) + splash.getWidth()/2-80, 100);
+        splash.setPosition(getWidth()/2 - splash.getWidth()/2 + 150, 100);
         splash.rotate(-15);
     }
 
     function splashChange() {
         splash.setFont(splashSize + "pt Arial");
-        splash.setPosition((getWidth()/3 * 2) + splash.getWidth()/2-80, 100);
+        splash.setPosition(getWidth()/2 - splash.getWidth()/2 + 150, 100);
 
         if (splashState == 0) {
-            splashSize += 0.15;
+            splashSize += 0.1;
 
-            if (splashSize > 21)
+            if (splashSize > 21.3)
                 splashState = 1;
         }
 
         if (splashState == 1) {
-            splashSize -= 0.15;
+            splashSize -= 0.1;
 
             if (splashSize < 20) {
                 splashState = 0;
@@ -367,6 +403,15 @@ window.onload = function() {
         mouseClickMethod(placeBlock);
         mouseMoveMethod(moveBoundBox);
         keyDownMethod(keyDown);
+    }
+
+    function breakBlock() {
+        for (var i = 0; i < blocks.length; i++) {
+            if (blocks[i].getX() == boundBox.getX() && blocks[i].getY() == boundBox.getY()) {
+                remove(blocks[i]);
+                blocks.splice(i, 1);
+            }
+        }
     }
     
     function placeBlock(e) {
@@ -623,6 +668,16 @@ window.onload = function() {
         if (e.keyCode == Keyboard.SHIFT) {
             changeStance();
         }
+
+        if (e.keyCode == Keyboard.CTRL) {
+            if (blockAction) {
+                mouseClickMethod(breakBlock); 
+            } else {
+                mouseClickMethod(placeBlock);
+            }
+
+            blockAction = !blockAction;
+        }
         
         switch(e.keyCode) {
             case Keyboard.letter('1'): setHotbarSlot(0); break;
@@ -715,4 +770,3 @@ window.onload = function() {
     }
     
 };
-    
