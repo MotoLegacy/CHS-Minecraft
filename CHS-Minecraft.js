@@ -135,10 +135,11 @@ window.onload = function() {
     var splash;
     var splashSize = 20;
     var splashState = 0;
+    var splashArray = [];
     
-    function start() {
+    function start(splash) {
+        splashArray = splash;
         startMenu();
-        //splashArr = readSplashes();
     }
 
     //---------------------------------------------------------
@@ -306,36 +307,27 @@ window.onload = function() {
         }
     }
 
-    function readSplashes(){
+    function readSplashes() {
         // read text from URL location
         var request = new XMLHttpRequest();
-        request.open('GET', 'http://ibowling.codehs.me/projects/2d-minecraft/splashes.txt', true);
+        request.open('GET', 'http://ibowling.codehs.me/projects/2d-minecraft/splashes.t', true);
         request.send(null);
 
         request.onreadystatechange = function () {
             if (request.readyState === 4 && request.status === 200) {
                 var type = request.getResponseHeader('Content-Type');
                 if (type.indexOf("text") !== 1) {
-                    /*var stuff = request.responseText;
-                    return stuff.split(/\r\n|\r|\n/g);*/
-                    //println(splashArr);
-                    return;
+                    var stuff = request.responseText;
+                    stuff = stuff.split(/\r\n|\r|\n/g);
+                    start(stuff);
                 }
             }
         }
     }
 
-    function setSplashes(spl) {
-        /*splashArr = spl.split(/\r\n|\r|\n/g);
-        println(splashArr[50]);*/
-        return;
-    }
-
     function getSplashText() {
-        //spl = Randomizer.nextInt(1, 361);
-        //println(splashArr[40]);
-
-        return "Alpha!";
+        spl = Randomizer.nextInt(1, 361);
+        return splashArray[spl];
     }
 
     function drawMenuBG() {
@@ -353,13 +345,15 @@ window.onload = function() {
     function drawSplash() {
         splash = new Text(getSplashText(), "20pt Arial");
         splash.setColor(Color.yellow);
+        //splash.setPosition(getWidth()/2 - splash.getWidth()/2 + 150, 100);
         splash.setPosition(getWidth()/2 - splash.getWidth()/2 + 150, 100);
-        splash.rotate(-15);
+        //splash.rotate(-15);
     }
 
     function splashChange() {
         splash.setFont(splashSize + "pt Arial");
         splash.setPosition(getWidth()/2 - splash.getWidth()/2 + 150, 100);
+        //splash.setPosition(getWidth()/2 - splash.getWidth()/2 + 150, 100);
 
         if (splashState == 0) {
             splashSize += 0.1;
@@ -489,6 +483,44 @@ window.onload = function() {
        ==================== 
     The thing everyone hates but everyone's gotta do!
     --------------------------------------------------*/
+
+    /*function checkCollison(a, b) {
+        var leftA = a.getX();
+        var rightA = a.getX() + getObjectDimensions(a, 0);
+        var topA = a.getY();
+        var bottomA = a.getY() + getObjectDimensions(a, 1);
+
+        var leftA = b.getX();
+        var rightA = b.getX() + getObjectDimensions(b, 0);
+        var topA = b.getY();
+        var bottomA = b.getY() + getObjectDimensions(b, 1);
+
+
+        if (bottomA <= topB)
+            return false;
+
+        if (topA >= bottomB)
+            return false;
+
+        if (rightA <= leftB)
+            return false;
+
+        if (leftA >= rightB)
+            return false;
+
+        return true;
+    }*/
+
+    function getObjectDimensions(obj, xy) {
+        switch(obj) {
+            case player:
+                if (xy) return 64;
+                else return 32;
+                break;
+            default:
+                return 32;
+        }
+    }
 
     //Checks if the X-Position is clear
     function xClear(dir) {
@@ -778,6 +810,10 @@ window.onload = function() {
                 player.setSize(32, 64);
             }
         }
+
+        /*if (e.keyCode == Keyboard.letter('E')) {
+            player.rotate(45);
+        }*/
         
         if (e.keyCode == Keyboard.SHIFT) {
             changeStance();
@@ -808,7 +844,7 @@ window.onload = function() {
     }
     
     if (typeof start === 'function') {
-        start();
+        readSplashes();
     }
     
 };
