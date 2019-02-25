@@ -43,25 +43,25 @@ window.onload = function() {
     /* =================
         IMAGE DEFITIONS
        ================ */
-    var IMG_STEVE = "https://image.ibb.co/ft3XVq/steve.png";
-    var IMG_STEVECROUCH = "https://image.ibb.co/hcu8YV/steve-Crouch.png";
-    var IMG_LSTEVE = "https://image.ibb.co/krzVqq/steveL.png";
-    var IMG_LSTEVECROUCH = "https://image.ibb.co/nsi2tV/steve-Crouch-L.png";
-    var IMG_HOTBARSLOT = "https://image.ibb.co/i2amVq/slot.png";
-    var IMG_MENUBUTTON = "https://image.ibb.co/bXv8kA/button.png";
-    var IMG_MENUBUTTONACTIVE = "https://image.ibb.co/moDayV/buttonHi.png";
-    var IMG_MENULOGO = "https://image.ibb.co/kKx5iV/logo.png";
-    var IMG_MENUDISCLAIMER = "https://image.ibb.co/jygf2q/disclaimer.png";
-    var IMG_MENUSTEVE = "https://image.ibb.co/g8c9Cq/steve.png";
-    var IMG_MENUTUX = "https://image.ibb.co/nynO5A/tuxS.png";
-    var IMG_TUX = "https://image.ibb.co/hsZ0JV/steve.png";
-    var IMG_TUXCROUCH = "https://image.ibb.co/iVEECq/steve-Crouch.png";
-    var IMG_LTUX = "https://image.ibb.co/mUZNXq/steveL.png";
-    var IMG_LTUXCROUCH = "https://image.ibb.co/ftQzdV/steve-Crouch-L.png";
-    var IMG_HOTBAR = "https://image.ibb.co/moOeiA/hotbar.png";
-    var IMG_BLOCKGRASS = "https://image.ibb.co/eudD3A/grass-side.png";
-    var IMG_BLOCKDIRT = "https://image.ibb.co/ez6SVq/dirt.png";
-    var IMG_BLOCKBEDROCK = "https://image.ibb.co/kHeEAq/bedrock.png";
+    var IMG_STEVE = "assets/steve.png";
+    var IMG_STEVECROUCH = "assets/steve-Crouch.png";
+    var IMG_LSTEVE = "assets/steveL.png";
+    var IMG_LSTEVECROUCH = "assets/steve-Crouch-L.png";
+    var IMG_HOTBARSLOT = "assets/slot.png";
+    var IMG_MENUBUTTON = "assets/button.png";
+    var IMG_MENUBUTTONACTIVE = "assets/buttonHi.png";
+    var IMG_MENULOGO = "assets/logo.png";
+    var IMG_MENUDISCLAIMER = "assets/disclaimer.png";
+    var IMG_MENUSTEVE = "assets/menuSteve.png";
+    var IMG_MENUTUX = "assets/menuTux.png";
+    var IMG_TUX = "assets/tux.png";
+    var IMG_TUXCROUCH = "assets/tux-Crouch.png";
+    var IMG_LTUX = "assets/tuxL.png";
+    var IMG_LTUXCROUCH = "assets/tux-Crouch-L.png";
+    var IMG_HOTBAR = "assets/hotbar.png";
+    var IMG_BLOCKGRASS = "assets/grass-side.png";
+    var IMG_BLOCKDIRT = "assets/dirt.png";
+    var IMG_BLOCKBEDROCK = "assets/bedrock.png";
 
     /* ===========
         GAME DEFS
@@ -310,7 +310,7 @@ window.onload = function() {
     function readSplashes() {
         // read text from URL location
         var request = new XMLHttpRequest();
-        request.open('GET', 'http://ibowling.codehs.me/projects/2d-minecraft/splashes.t', true);
+        request.open('GET', 'assets/splashes.txt', true);
         request.send(null);
 
         request.onreadystatechange = function () {

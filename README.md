@@ -1,14 +1,16 @@
 # CHS-Minecraft
 
-![alt text](https://image.ibb.co/hDXnSf/mc.png "Pretty sun, don't ya think?")
+<center>
+<img src="https://i.postimg.cc/Qd6JZ9BZ/mc2.png" alt="Pretty sun, dontcha think?">
+</center>
 
 ---
 
 ## About
-2D Minecraft is a 2D/Paper version of Minecraft writen in JavaScript and powered by CodeHS' sandbox. Cool, huh?
+This project was an attempt to create a flat/2D Minecraft clone using CodeHS' API, as well as highlight missing features/issues with the API in hopes that this will be resolved in the future. As of now, you can navigate through a simple menu system, change your skin, and load a flat world where you can place and delete blocks. 
 <br>
 
-As of now, all you can do is watch the sun and moon fly by, place some dirt and grass, and move left and right. But do not fret, Minecrafter! More will be added soon. :)
+Due to the issues referenced above, development of this project has ceased.
 
 ---
 
