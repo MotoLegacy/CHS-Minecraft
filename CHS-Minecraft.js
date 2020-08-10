@@ -57,9 +57,6 @@ window.onload = function() {
     //temp vars
     var blockInHand = HAND;
     
-    //skybox colors
-    var skyDay = new Color(157, 211, 255);
-    
     //plr
     var player;
     var playerSkin = IMG_STEVE;
@@ -78,14 +75,6 @@ window.onload = function() {
     var blockInSlot = [];
     blockInSlot.push(GRASS);
     blockInSlot.push(DIRT);
-    
-    //sky
-    var theVoid;
-    var day;
-    var sun;
-    var moon;
-    var sunAng = 0;
-    var moonAng = 0;
 
     //input
     blockAction = 0;
@@ -124,7 +113,7 @@ window.onload = function() {
     }
     
     function mainMenu() {
-        drawSplash();
+        //drawSplash();
         drawMenuBG();
         createMenuButton("New World", getWidth()/2, 210);
         createMenuButton("Skins", getWidth()/2, 250);
@@ -204,7 +193,7 @@ window.onload = function() {
     
     function disclaimerBG() {
         var fakeSky = new Rectangle(getWidth(), getHeight());
-        fakeSky.setColor(skyDay);
+        fakeSky.setColor(SKY_DAY);
 
         var disclaim = new WebImage(IMG_MENUDISCLAIMER);
         disclaim.setPosition(5, 5);
@@ -303,14 +292,16 @@ window.onload = function() {
 
     function drawMenuBG() {
         var fakeSky = new Rectangle(getWidth(), getHeight());
-        fakeSky.setColor(skyDay);
+
+        // FIXME
+        fakeSky.setColor(Color.blue);
 
         var logo = new WebImage(IMG_MENULOGO);
         logo.setPosition(getWidth()/4, 10);
 
         add(fakeSky);
         add(logo);
-        add(splash);
+        //add(splash);
     }
 
     function drawSplash() {
@@ -359,9 +350,9 @@ window.onload = function() {
     //in-game stuffs
     //---------------------------------------------------------
 
-    //Start that boi!
+    // Initialization of Game.
     function startGame() {
-        createSky();
+        Sky_Create();
         generateTerrain();
         initHUD();
         spawnPlayer(32, 32);
@@ -414,39 +405,6 @@ window.onload = function() {
         blk.setSize(32, 32);
         blocks.push(blk);
         add(blk);
-    }
-    
-    //Sky, Sun, Moon
-    function createSky() {
-        day = new Rectangle(getWidth(), getHeight() - 2*32);
-        day.setPosition(0, 0);
-        day.setColor(skyDay);
-        
-        sun = new Rectangle(50, 50);
-        sun.setPosition(getWidth()/2, 30);
-        sun.setColor(Color.yellow);
-        
-        moon = new Rectangle(50, 50);
-        moon.setPosition(getWidth()/2, 800);
-        moon.setColor(Color.white);
-        setTimer(skyChange, 50);
-        
-        theVoid = new Rectangle(getWidth(), getHeight());
-        theVoid.setPosition(0, 0);
-        theVoid.setColor(Color.black)
-        
-        add(theVoid);
-        add(day);
-        add(sun);
-        add(moon);
-    }
-    
-    //Make the sun and moon revolve around the world.
-    function skyChange() {
-        sunAng -= 3 * Math.PI / 180;
-        moonAng += 3 * Math.PI / 180;
-        sun.setPosition(sun.getX() - 25 * Math.cos(sunAng), sun.getY() - 20 * Math.sin(sunAng));
-        moon.setPosition(moon.getX() - 25 * Math.cos(moonAng), moon.getY() - 20 * Math.sin(moonAng));
     }
 
     /* ====================
@@ -815,7 +773,8 @@ window.onload = function() {
     }
     
     if (typeof start === 'function') {
-        readSplashes();
+        //readSplashes();
+        start();
     }
     
 };
