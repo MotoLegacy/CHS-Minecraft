@@ -11,35 +11,6 @@ window.onload = function() {
         * re-organize function locations
     */
 
-    /* ===================
-        CodeHS API ISSUES
-       ===================
-
-        1. On slow connections, images will often 'pop-in' or not
-           load at all. This gives the impression that the game is
-           unstable. it's not. blame CodeHS. It'd be nice if in the
-           future CodeHS would offer a solution to this, or just have
-           a simple check if an image is cached/ready to use.
-           ...
-           CodeHS please.
-           ----------
-           Ex.
-
-           if (IMAGENAME.getChached()) { //boolean
-                //code to say "hey man keep doin what you're doin"
-           }
-
-        2. You cannot generate gradients. This makes the color-changing
-           skybox near impossible without the use of an image (which isn't
-           a good idea, see issue #1). I do not see why this is not a thing,
-           gradients are cool.
-           ---------
-           Ex.
-
-           var gradient = new Gradient(START_COLOR, END_COLOR, SPACE_BEFORE_GRADIENT);
-           SHAPE.setGradient(gradient);
-    */
-
     /* =================
         IMAGE DEFITIONS
        ================ */
