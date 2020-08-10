@@ -352,7 +352,15 @@ window.onload = function() {
 
     // Initialization of Game.
     function startGame() {
+        // Start drawing of the Sky
         Sky_Create();
+
+        // Start Tick System
+        setTimer(Tick_Update, 50);
+
+        // Set Time of Day to Mid-Day
+        Time = 0;
+        
         generateTerrain();
         initHUD();
         spawnPlayer(32, 32);

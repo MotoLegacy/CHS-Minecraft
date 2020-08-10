@@ -13,23 +13,23 @@ var Sky_Background;
 var Sky_Sun;
 var Sky_Moon;
 var Sky_Void;
-var Sky_SunAngle = 0;
-var Sky_MoonAngle = 0;
 
 //
 // Sky_Update()
 // Revolve Sun and Moon around World, change Sky Color
 //
 function Sky_Update() {
-    Sky_SunAngle -= 4 * Math.PI / 180;
-    Sky_MoonAngle -= 4 * Math.PI / 180;
-    Sky_Sun.setPosition(Sky_Sun.getX() - 25 * Math.cos(Sky_SunAngle), Sky_Sun.getY() - 20 * Math.sin(Sky_SunAngle));
-    Sky_Moon.setPosition(Sky_Moon.getX() - 25 * Math.cos(Sky_MoonAngle), Sky_Moon.getY() + 20 * Math.sin(Sky_MoonAngle));
+    // Calculate the Movement Angle
+    var Angle = ((Time/24000)/100) * 360;
+    
+    // Move the Sun and Moon based on Angle
+    Sky_Sun.setPosition((Math.cos(Angle) * 225) + (getWidth()/2) - 25, -(Math.sin(Angle) * 225) + (getHeight()/2) - 25);
+    Sky_Moon.setPosition(-(Math.cos(Angle) * 225) + (getWidth()/2) - 25, (Math.sin(Angle) * 225) + (getHeight()/2) - 25);
 }
 
 //
 // Sky_Create()
-// Initialize Sky background, Sun, Moon, and Void. Also Sets a Timer for Sky Updating.
+// Initialize Sky background, Sun, Moon, and Void.
 //
 function Sky_Create() {
     // Initialize Sky Colors
@@ -45,25 +45,22 @@ function Sky_Create() {
         
     // Sun
     Sky_Sun = new Rectangle(50, 50);
-    Sky_Sun.setPosition(getWidth()/2, 30);
+    Sky_Sun.setPosition(getWidth() - 25, getHeight()/2 - 25);
     Sky_Sun.setColor(Color.yellow);
     
     // Moon
     Sky_Moon = new Rectangle(50, 50);
-    Sky_Moon.setPosition(getWidth()/2, 600);
+    Sky_Moon.setPosition(getWidth()/2 - 25, getHeight()/2 - 25);
     Sky_Moon.setColor(Color.white);
         
     // The Void
     Sky_Void = new Rectangle(getWidth(), getHeight());
-    Sky_Void.setPosition(0, 0);
+    Sky_Void.setPosition(0, getHeight() - 2*32);
     Sky_Void.setColor(Color.black)
         
     // Add to World
-    add(Sky_Void);
     add(Sky_Background);
     add(Sky_Sun);
     add(Sky_Moon);
-
-    // Start Timer for Sky Updates
-    setTimer(Sky_Update, 50);
+    add(Sky_Void);
 }
