@@ -13,6 +13,7 @@ var IMAGE_PANORAMATRAIL 		= 3;
 var IMAGE_MENUBUTTON 			= 4;
 var IMAGE_MENUBUTTONACTIVE 		= 5;
 var IMAGE_MCLOGO 				= 6;
+var IMAGE_DISCLAIMER 			= 7;
 
 // Used in CacheLoop() for visualization
 var ImageHandler_BlackBG;
@@ -38,6 +39,7 @@ function ImageHandler_Initialize() {
 	ImageHandler_Images.push("assets/button.png");
 	ImageHandler_Images.push("assets/buttonHi.png");
 	ImageHandler_Images.push("assets/logo.png");
+	ImageHandler_Images.push("assets/disclaimer.png");
 
 	// Start caching process
 	ImageHandler_Cache();

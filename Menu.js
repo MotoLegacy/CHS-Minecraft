@@ -10,6 +10,7 @@ var Menu_BackgroundTrail;
 var Menu_Logo;
 
 // Music Tracks
+var Menu_MusicTracks = [];
 var Menu_Track1;
 var Menu_Track2;
 var Menu_Track3;
@@ -17,6 +18,15 @@ var Menu_Track4;
 
 // Array storing all menu buttons active in the current window
 var Menu_ButtonArray = [];
+var Menu_ActiveButton;
+
+// Current Menu
+var Menu_InMenu         =   0;
+var MENU_DISCLAIMER     =   0;
+var MENU_MAIN           =   1;
+
+// Menu Sounds
+var Menu_SoundClick;
 
 //
 // Menu_Initialize()
@@ -38,14 +48,48 @@ function Menu_Initialize() {
     Menu_Logo.setPosition(getWidth()/3 - 15, 10);
     add(Menu_Logo);
 
+    // Load Menu Sounds
+    Menu_LoadSounds();
+
     // Start Menu Update Loop
     setTimer(Menu_Update, 15);
+
+    // Every five minutes, play a new Menu track
+    setTimer(Menu_PlayMenuTrack, 60000 * 5);
 
     // Check Mouse Updates for Button Activity
     mouseMoveMethod(Menu_ButtonUpdate);
 
-    // Load the Main Menu
-    Menu_Main();
+    // Check for Mouse Button Activity for Menu Entering
+    mouseClickMethod(Menu_EnterMenu);
+
+    // Load Disclaimer Menu
+    Menu_InMenu = MENU_DISCLAIMER;
+    Menu_Disclaimer();
+
+}
+
+//
+// Menu_EnterMenu()
+// Check if we should enter a Menu on Mouse Click
+//
+function Menu_EnterMenu(e) {
+    // Don't do anything if we aren't highlighting a button
+    if (Menu_ActiveButton == -1)
+        return;
+
+    console.log(Menu_ActiveButton);
+
+    switch(Menu_InMenu) {
+        case MENU_DISCLAIMER:
+            Menu_DisclaimerInput();
+            break;
+        case MENU_MAIN:
+            Menu_MainInput();
+            break;
+        default:
+            break;
+    }
 }
 
 //
@@ -58,8 +102,12 @@ function Menu_ButtonUpdate(e) {
         // TODO: Collision Checks?
         if (e.getX() >= Menu_ButtonArray[i].getX() && e.getX() <= Menu_ButtonArray[i].getX() + 512 && e.getY() >= Menu_ButtonArray[i].getY() && e.getY() <= Menu_ButtonArray[i].getY() + 48) {
             Menu_ButtonArray[i].setImage("assets/buttonHi.png");
+            Menu_ActiveButton = i;
         } else {
             Menu_ButtonArray[i].setImage("assets/button.png");
+
+            if (Menu_ActiveButton == i)
+                Menu_ActiveButton = -1;
         }
     }
 }
@@ -81,6 +129,23 @@ function Menu_Update() {
 }
 
 //
+// Menu_Refresh()
+// Refreshes the Panorama and logo, unloads buttons, plays click sound
+//
+function Menu_Refresh() {
+    remove(Menu_Background);
+    remove(Menu_BackgroundTrail);
+    remove(Menu_Logo);
+    add(Menu_Background);
+    add(Menu_BackgroundTrail);
+    add(Menu_Logo);
+
+    Menu_ButtonArray = [];
+
+    Menu_SoundClick.play();
+}
+
+//
 // Menu_CreateButton(Title, XPosition, YPosition)
 // Creates a Menu Button
 //
@@ -99,23 +164,162 @@ function Menu_CreateButton(Title, XPosition, YPosition) {
 }
 
 //
+// Menu_Disclaimer()
+// A disclaimer concerning project authenticity and motive
+//
+var Menu_DisclaimerImage;
+var Menu_DisclaimerText1;
+var Menu_DisclaimerText2;
+var Menu_DisclaimerText3;
+var Menu_DisclaimerText4;
+var Menu_DisclaimerText5;
+var Menu_DisclaimerText6;
+var Menu_DisclaimerText7;
+function Menu_Disclaimer() {
+    // Background Image
+    Menu_DisclaimerImage = new WebImage(ImageHandler_Images[IMAGE_DISCLAIMER]);
+    Menu_DisclaimerImage.setPosition(5, 80);
+    add(Menu_DisclaimerImage);
+
+    // Text
+    Menu_DisclaimerText1 = new Text("Hi!", "18pt Minecraftia");
+    Menu_DisclaimerText1.setColor(Color.white);
+    Menu_DisclaimerText1.setPosition(40, 150);
+    //
+    Menu_DisclaimerText2 = new Text("This project mainly serves as a Proof of Concept to display some", "18pt Minecraftia");
+    Menu_DisclaimerText2.setColor(Color.white);
+    Menu_DisclaimerText2.setPosition(40, 200);
+
+    Menu_DisclaimerText3 = new Text("of the CodeHS JavaScript APIs capabilities on a large scale.", "18pt Minecraftia");
+    Menu_DisclaimerText3.setColor(Color.white);
+    Menu_DisclaimerText3.setPosition(40, 230);
+    //
+    Menu_DisclaimerText4 = new Text("It is in no way associated with Mojang, Xbox Game Studios, or", "18pt Minecraftia");
+    Menu_DisclaimerText4.setColor(Color.white);
+    Menu_DisclaimerText4.setPosition(40, 280);
+
+    Menu_DisclaimerText5 = new Text("Microsoft, and is made with all but bad intentions.", "18pt Minecraftia");
+    Menu_DisclaimerText5.setColor(Color.white);
+    Menu_DisclaimerText5.setPosition(40, 310);
+    //
+    Menu_DisclaimerText6 = new Text("The Source Code to this project can be found at:", "18pt Minecraftia");
+    Menu_DisclaimerText6.setColor(Color.white);
+    Menu_DisclaimerText6.setPosition(40, 360);
+
+    Menu_DisclaimerText7 = new Text("https://github.com/MotoLegacy/CHS-Minecraft", "18pt Minecraftia");
+    Menu_DisclaimerText7.setColor(Color.white);
+    Menu_DisclaimerText7.setPosition(40, 390);
+
+    add(Menu_DisclaimerText1);
+    add(Menu_DisclaimerText2);
+    add(Menu_DisclaimerText3);
+    add(Menu_DisclaimerText4);
+    add(Menu_DisclaimerText5);
+    add(Menu_DisclaimerText6);
+    add(Menu_DisclaimerText7);
+
+    // Button to head to the main Menu
+    Menu_CreateButton("Gotcha!", getWidth()/2, 426);
+}
+
+//
+// Menu_DisclaimerClean()
+// Cleans all Disclaimer Elements
+//
+function Menu_DisclaimerClean() {
+    remove(Menu_DisclaimerImage);
+    remove(Menu_DisclaimerText1);
+    remove(Menu_DisclaimerText2);
+    remove(Menu_DisclaimerText3);
+    remove(Menu_DisclaimerText4);
+    remove(Menu_DisclaimerText5);
+    remove(Menu_DisclaimerText6);
+    remove(Menu_DisclaimerText7);
+
+    Menu_Refresh();
+}
+
+//
+// Menu_DisclaimerInput()
+// Button Inputs for the Disclaimer Menu
+//
+function Menu_DisclaimerInput() {
+    switch(Menu_ActiveButton) {
+        case 0: // Gotcha
+            Menu_DisclaimerClean();
+            Menu_Main();
+            Menu_InMenu = MENU_MAIN;
+            break;
+        default:
+            break;
+    }
+}
+
+//
 // Menu_Main()
 // The Main Game Menu
 //
 function Menu_Main() {
     Menu_CreateButton("Play Game", getWidth()/2, 150);
-    console.log("hi\n");
+    Menu_CreateButton("Disclaimer", getWidth()/2, 210);
+}
+
+//
+// Menu_MainClean()
+// Clean Main Menu Elements
+//
+function Menu_MainClean() {
+    Menu_Refresh();
+}
+
+//
+// Menu_MainInput()
+// Button Inputs for the Main Menu
+//
+function Menu_MainInput() {
+    switch(Menu_ActiveButton) {
+        case 1: // Disclaimer
+            Menu_MainClean();
+            Menu_Disclaimer();
+            Menu_InMenu = MENU_DISCLAIMER;
+            break;
+        default:
+            break;
+    }
 }
 
 //
 // Menu_LoadMenuMusic()
-// Loads all of the Menu Music Tracks.
+// Loads all of the Menu Music Tracks, and starts playing one.
 //
 function Menu_LoadMenuMusic() {
-    Menu_Track1 = new Audio("assets/music/menu1.mp3");
-    Menu_Track2 = new Audio("assets/music/menu2.mp3");
-    Menu_Track3 = new Audio("assets/music/menu3.mp3");
-    Menu_Track4 = new Audio("assets/music/menu4.mp3");
+    var TempTrack = new Audio("assets/music/menu1.mp3");
+    Menu_MusicTracks.push(TempTrack);
+    TempTrack = new Audio("assets/music/menu2.mp3");
+    Menu_MusicTracks.push(TempTrack);
+    TempTrack = new Audio("assets/music/menu3.mp3");
+    Menu_MusicTracks.push(TempTrack);
+    TempTrack = new Audio("assets/music/menu4.mp3");
+    Menu_MusicTracks.push(TempTrack);
 
-    Menu_Track2.play();
+
+    // Play a random Menu Track
+    Menu_PlayMenuTrack();
+}
+
+//
+// Menu_PlayMenuTrack()
+// Plays a Menu Track.
+//
+function Menu_PlayMenuTrack() {
+    var TempValue = Math.floor((Math.random() * 4)); // 0-3
+    AudioEngine_PlayMusicTrack(Menu_MusicTracks[TempValue]);
+}
+
+//
+// Menu_LoadSounds()
+// Loads all menu-related sounds
+//
+function Menu_LoadSounds() {
+    Menu_SoundClick = new Audio("assets/sound/random/click.mp3");
 }
