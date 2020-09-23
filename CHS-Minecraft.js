@@ -99,7 +99,8 @@ window.onload = function() {
     
     function start(splash) {
         splashArray = splash;
-        Menu_Initialize();
+        ImageHandler_Initialize();
+        //Menu_Initialize();
         //startMenu();
     }
 
