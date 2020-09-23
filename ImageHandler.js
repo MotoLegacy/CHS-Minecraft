@@ -6,10 +6,13 @@
 var ImageHandler_Images 		= [];
 
 // Image Indexes
-var IMAGE_PANORAMA 				= 0;
-var IMAGE_PANORAMATRAIL 		= 1;
-var IMAGE_MENUBUTTON 			= 2;
-var IMAGE_MENUBUTTONACTIVE 		= 3;
+var IMAGE_MOJANG 				= 0;
+var IMAGE_XBOX 					= 1;
+var IMAGE_PANORAMA 				= 2;
+var IMAGE_PANORAMATRAIL 		= 3;
+var IMAGE_MENUBUTTON 			= 4;
+var IMAGE_MENUBUTTONACTIVE 		= 5;
+var IMAGE_MCLOGO 				= 6;
 
 // Used in CacheLoop() for visualization
 var ImageHandler_BlackBG;
@@ -25,11 +28,16 @@ var ImageHandler_CacheAmount 	= 0;
 // Fills the ImageHandler_Images array with needed assets
 //
 function ImageHandler_Initialize() {
+	// Splash
+	ImageHandler_Images.push("assets/splash/mojang.png");
+	ImageHandler_Images.push("assets/splash/xbox.png");
+
 	// Menu
 	ImageHandler_Images.push("assets/panorama.png");
 	ImageHandler_Images.push("assets/panorama-trail.png");
 	ImageHandler_Images.push("assets/button.png");
 	ImageHandler_Images.push("assets/buttonHi.png");
+	ImageHandler_Images.push("assets/logo.png");
 
 	// Start caching process
 	ImageHandler_Cache();
@@ -66,7 +74,7 @@ function ImageHandler_Cache() {
 	add(ImageHandler_LoadingText);
 
 	// Start caching process
-	setTimer(ImageHandler_CacheLoop, 15);
+	setTimer(ImageHandler_CacheLoop, 40);
 }
 
 //
@@ -75,12 +83,12 @@ function ImageHandler_Cache() {
 //
 function ImageHandler_CacheLoop() {
 	// Move on to different image and/or stop cache process
-	if (ImageHandler_CacheAmount >= 5) {
+	if (ImageHandler_CacheAmount >= 10) {
 		ImageHandler_CacheAmount = 0;
 		ImageHandler_CacheCount++;
 
 		// Clean up, stop timer, start splash screen.
-		if (ImageHandler_CacheCount >= ImageHandler_Images.length - 1) {
+		if (ImageHandler_CacheCount >= ImageHandler_Images.length) {
 			stopTimer(ImageHandler_CacheCount);
 			remove(ImageHandler_BlackBG);
 			remove(ImageHandler_LoadingText);
@@ -89,7 +97,7 @@ function ImageHandler_CacheLoop() {
 	}
 
 	// Update the status message.
-	var NewText = "Loading: " + ImageHandler_Images[ImageHandler_CacheCount] + " (" + ImageHandler_CacheCount + " of " + ImageHandler_Images.length - 1 + ")";
+	var NewText = "Loading: " + ImageHandler_Images[ImageHandler_CacheCount] + " (" + (ImageHandler_CacheCount + 1) + " of " + (ImageHandler_Images.length) + ")";
 	ImageHandler_LoadingText.setText(NewText);
 
 	var TempImage = new WebImage(ImageHandler_Images[ImageHandler_CacheCount]);
