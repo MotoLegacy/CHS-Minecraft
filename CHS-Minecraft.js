@@ -359,7 +359,7 @@ window.onload = function() {
         setTimer(Tick_Update, 50);
 
         // Set Time of Day to Mid-Day
-        Time = 0;
+        Time = 12000;
         
         generateTerrain();
         initHUD();

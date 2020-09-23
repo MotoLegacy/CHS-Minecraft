@@ -8,7 +8,7 @@ var Time_DaysPlayed = 0;
 
 function Tick_Update() {
     // Increment Time
-    Time += 1;
+    Time++;
 
     // Update the Sky
     Sky_Update();

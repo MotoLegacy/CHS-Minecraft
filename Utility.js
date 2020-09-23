@@ -2,6 +2,9 @@
 // Utility.js - A set of extended CodeHS API features.
 //
 
+// Array to store all Rectangles for Gradients
+var Utility_GradientArray = [];
+
 //
 // Utility_InterpolateColor(ColorOne, ColorTwo, Fidelity)
 // Primarily used for Utility_DrawGradient, Interpolates Color objects
@@ -11,6 +14,16 @@
 // be. Function expects a value between 0-1.
 //
 function Utility_InterpolateColor(ColorOne, ColorTwo, Fidelity) {
+    // Return ColorOne if Fidelity does not exist
+    if (Fidelity <= 0) {
+        return ColorOne;
+    }
+
+    // Similarly, return ColorTwo if Fidelity is greater than one
+    if (Fidelity >= 1) {
+        return ColorTwo;
+    }
+
     // Store Color Information
     var ColorOneArray = [ColorOne.r, ColorOne.g, ColorOne.b];
     var ColorTwoArray = [ColorTwo.r, ColorTwo.g, ColorTwo.b];
@@ -26,6 +39,17 @@ function Utility_InterpolateColor(ColorOne, ColorTwo, Fidelity) {
 }
 
 //
+// Utility_ClearGradient()
+// Removes all of the Rectangles in the Gradient Array.
+//
+function Utility_ClearGradient() {
+    for (var i = 0; i < Utility_GradientArray.length; i++) {
+        remove(Utility_GradientArray[i]);
+    }
+    Utility_GradientArray = [];
+}
+
+//
 // Utility_DrawGradient(Width, Height, StartColor, EndColor, Fidelity)
 // Draws a series of Rectangles in respect to the defined Width and Height,
 // to simulate a Gradient Blend between Colors. May be Performance Intensive!
@@ -35,21 +59,30 @@ function Utility_InterpolateColor(ColorOne, ColorTwo, Fidelity) {
 // but also produces a rougher Gradient.
 // ----
 // See Draw_InterpolatedColor for Information on the 'Fidelity' Parameter.
-//
+// ----
+// This Utility is currently functional but features a bug in which Fidelity
+// increases exponentially, 
 function Utility_DrawGradient(Width, Height, StartColor, EndColor, RectWidth, Fidelity) {
     // For Storing our Interpolated Colors
     var InterpolatedColor = StartColor;
 
+    // Reset Gradient Array
+    Utility_ClearGradient();
+
     for (var i = 0; i < Height; i += RectWidth) {
         var Rect = new Rectangle(Width, RectWidth);
         
+        // Get new Color for next Interation
+        InterpolatedColor = Utility_InterpolateColor(StartColor, EndColor, Fidelity);
+
         // Set Our Color
         Rect.setColor(InterpolatedColor);
 
-        // Get new Color for next Interation
-        InterpolatedColor = Utility_InterpolateColor(InterpolatedColor, EndColor, Fidelity);
-
+        // Add it to the Canvas
         Rect.setPosition(0, i);
         add(Rect);
+
+        // Push to Gradient Array
+        Utility_GradientArray.push(Rect);
     }
 }
