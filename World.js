@@ -3,11 +3,22 @@
 //
 
 // World Borders
-var WORLD_LENGTH 	= 128;
-var WORLD_HEIGHT 	= 128;
+var WORLD_LENGTH 	= 256;
+var WORLD_HEIGHT 	= 256;
 
 // Blocks in World
 var World_Blocks 	= [];
+
+//
+// World_IsInCanvas(XCoord, YCoord)
+// Checks if Entity/Block Coordinates are on the Canvas
+// TODO: Y Bounds
+function World_IsInCanvas(XCoord, YCoord) {
+	if (getWidth() > XCoord && XCoord > -32)
+		return true;
+
+	return false;
+}
 
 //
 // World_GetCanvasXCoordinate(Coord)
@@ -22,7 +33,6 @@ function World_GetCanvasXCoordinate(Coord) {
 // Returns the location on the canvas of a game Y-coord
 //
 function World_GetCanvasYCoordinate(Coord) {
-	console.log("y: " + ((448 - (32 * Coord)) + Camera_Y))
 	return (448 - (32 * Coord)) + Camera_Y;
 }
 
@@ -33,8 +43,15 @@ function World_GetCanvasYCoordinate(Coord) {
 function World_Redraw() {
 	for (var i = 0; i < World_Blocks.length; i++) {
 		remove(World_Blocks[i].Image);
-		World_Blocks[i].Image.setPosition(World_GetCanvasXCoordinate(World_Blocks[i].XCoord), World_GetCanvasYCoordinate(World_Blocks[i].YCoord));
-		add(World_Blocks[i].Image);
+
+		// Canvas Coordinates
+		XDrawCoord = World_GetCanvasXCoordinate(World_Blocks[i].XCoord);
+		YDrawCoord = World_GetCanvasYCoordinate(World_Blocks[i].YCoord);
+		World_Blocks[i].Image.setPosition(XDrawCoord, YDrawCoord);
+		
+		// Re-draw if still in Canvas
+		if (World_IsInCanvas(XDrawCoord, YDrawCoord))
+			add(World_Blocks[i].Image);
 	}
 }
 
@@ -45,8 +62,18 @@ function World_Redraw() {
 function World_PlaceBlock(XCoord, YCoord, BlockID) {
 	// Create the Block Image
 	var BlockImage = new WebImage(Block_GetTexture(BlockID));
-	BlockImage.setPosition(World_GetCanvasXCoordinate(XCoord), World_GetCanvasYCoordinate(YCoord));
-	add(BlockImage);
+
+	// Canvas Coordinates
+	XDrawCoord = World_GetCanvasXCoordinate(XCoord);
+	YDrawCoord = World_GetCanvasYCoordinate(YCoord);
+
+	// Set Position
+	BlockImage.setPosition(XDrawCoord, YDrawCoord);
+
+	// Only Add what is visible to the canvas
+	if (World_IsInCanvas(XDrawCoord, YDrawCoord)) {
+		add(BlockImage);
+	}
 
 	// Create a new Block
 	var TempBlock = new Block(BlockImage, XCoord, YCoord);
