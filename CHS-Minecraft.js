@@ -100,8 +100,6 @@ window.onload = function() {
     function start(splash) {
         splashArray = splash;
         ImageHandler_Initialize();
-        //Menu_Initialize();
-        //startMenu();
     }
 
     //---------------------------------------------------------
@@ -356,6 +354,7 @@ window.onload = function() {
     function startGame() {
         // Start drawing of the Sky
         Sky_Create();
+
 
         // Start Tick System
         setTimer(Tick_Update, 50);

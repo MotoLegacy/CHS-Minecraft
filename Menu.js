@@ -78,8 +78,6 @@ function Menu_EnterMenu(e) {
     if (Menu_ActiveButton == -1)
         return;
 
-    console.log(Menu_ActiveButton);
-
     switch(Menu_InMenu) {
         case MENU_DISCLAIMER:
             Menu_DisclaimerInput();
@@ -129,6 +127,18 @@ function Menu_Update() {
 }
 
 //
+// Menu_Clean
+// Clean the entire Menu
+//
+function Menu_Clean() {
+    stopTimer(Menu_Update);
+    stopTimer(Menu_PlayMenuTrack);
+    remove(Menu_Logo);
+    remove(Menu_Background);
+    remove(Menu_BackgroundTrail);
+}
+
+//
 // Menu_Refresh()
 // Refreshes the Panorama and logo, unloads buttons, plays click sound
 //
@@ -139,6 +149,10 @@ function Menu_Refresh() {
     add(Menu_Background);
     add(Menu_BackgroundTrail);
     add(Menu_Logo);
+
+    for(var i = 0; i < Menu_ButtonArray.length; i++) {
+        remove(Menu_ButtonArray[i]);
+    }
 
     Menu_ButtonArray = [];
 
@@ -278,6 +292,12 @@ function Menu_MainClean() {
 //
 function Menu_MainInput() {
     switch(Menu_ActiveButton) {
+        case 0: // Play Game
+            Menu_MainClean();
+            Menu_Clean();
+            Menu_InMenu = -1;
+            Game_Start();
+            break;
         case 1: // Disclaimer
             Menu_MainClean();
             Menu_Disclaimer();

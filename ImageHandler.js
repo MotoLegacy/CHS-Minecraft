@@ -14,6 +14,9 @@ var IMAGE_MENUBUTTON 			= 4;
 var IMAGE_MENUBUTTONACTIVE 		= 5;
 var IMAGE_MCLOGO 				= 6;
 var IMAGE_DISCLAIMER 			= 7;
+var IMAGE_BLOCKBEDROCK 			= 8;
+var IMAGE_BLOCKDIRT 			= 9;
+var IMAGE_BLOCKGRASS 			= 10;
 
 // Used in CacheLoop() for visualization
 var ImageHandler_BlackBG;
@@ -40,6 +43,11 @@ function ImageHandler_Initialize() {
 	ImageHandler_Images.push("assets/buttonHi.png");
 	ImageHandler_Images.push("assets/logo.png");
 	ImageHandler_Images.push("assets/disclaimer.png");
+
+	// Blocks
+	ImageHandler_Images.push("assets/blocks/bedrock.png");
+	ImageHandler_Images.push("assets/blocks/dirt.png");
+	ImageHandler_Images.push("assets/blocks/grass-side.png");
 
 	// Start caching process
 	ImageHandler_Cache();
