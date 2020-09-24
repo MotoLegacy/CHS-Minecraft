@@ -99,10 +99,10 @@ function Menu_ButtonUpdate(e) {
     for (var i = 0; i < Menu_ButtonArray.length; i++) {
         // TODO: Collision Checks?
         if (e.getX() >= Menu_ButtonArray[i].getX() && e.getX() <= Menu_ButtonArray[i].getX() + 512 && e.getY() >= Menu_ButtonArray[i].getY() && e.getY() <= Menu_ButtonArray[i].getY() + 48) {
-            Menu_ButtonArray[i].setImage("assets/buttonHi.png");
+            Menu_ButtonArray[i].setImage(ImageHandler_Images[IMAGE_MENUBUTTONACTIVE]);
             Menu_ActiveButton = i;
         } else {
-            Menu_ButtonArray[i].setImage("assets/button.png");
+            Menu_ButtonArray[i].setImage(ImageHandler_Images[IMAGE_MENUBUTTON]);
 
             if (Menu_ActiveButton == i)
                 Menu_ActiveButton = -1;
@@ -168,7 +168,7 @@ function Menu_CreateButton(Title, XPosition, YPosition) {
     TempText.setColor(Color.white);
     TempText.setPosition(XPosition - TempText.getWidth()/2, YPosition + 48);
 
-    var TempImage = new WebImage("assets/button.png");
+    var TempImage = new WebImage(ImageHandler_Images[IMAGE_MENUBUTTON]);
     TempImage.setPosition(XPosition - 256, YPosition);
 
     add(TempImage);

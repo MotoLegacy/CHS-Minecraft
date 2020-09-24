@@ -37,12 +37,12 @@ function ImageHandler_Initialize() {
 	ImageHandler_Images.push("assets/splash/xbox.png");
 
 	// Menu
-	ImageHandler_Images.push("assets/panorama.png");
-	ImageHandler_Images.push("assets/panorama-trail.png");
-	ImageHandler_Images.push("assets/button.png");
-	ImageHandler_Images.push("assets/buttonHi.png");
-	ImageHandler_Images.push("assets/logo.png");
-	ImageHandler_Images.push("assets/disclaimer.png");
+	ImageHandler_Images.push("assets/gui/panorama.png");
+	ImageHandler_Images.push("assets/gui/panorama-trail.png");
+	ImageHandler_Images.push("assets/gui/button.png");
+	ImageHandler_Images.push("assets/gui/buttonHi.png");
+	ImageHandler_Images.push("assets/gui/logo.png");
+	ImageHandler_Images.push("assets/gui/disclaimer.png");
 
 	// Blocks
 	ImageHandler_Images.push("assets/blocks/bedrock.png");
