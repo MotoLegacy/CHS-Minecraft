@@ -18,6 +18,7 @@ var Menu_Track4;
 
 // Array storing all menu buttons active in the current window
 var Menu_ButtonArray = [];
+var Menu_ButtonTextArray = [];
 var Menu_ActiveButton;
 
 // Current Menu
@@ -100,9 +101,11 @@ function Menu_ButtonUpdate(e) {
         // TODO: Collision Checks?
         if (e.getX() >= Menu_ButtonArray[i].getX() && e.getX() <= Menu_ButtonArray[i].getX() + 512 && e.getY() >= Menu_ButtonArray[i].getY() && e.getY() <= Menu_ButtonArray[i].getY() + 48) {
             Menu_ButtonArray[i].setImage(ImageHandler_Images[IMAGE_MENUBUTTONACTIVE]);
+            Menu_ButtonTextArray[i].setColor(Color.yellow);
             Menu_ActiveButton = i;
         } else {
             Menu_ButtonArray[i].setImage(ImageHandler_Images[IMAGE_MENUBUTTON]);
+            Menu_ButtonTextArray[i].setColor(Color.white);
 
             if (Menu_ActiveButton == i)
                 Menu_ActiveButton = -1;
@@ -152,9 +155,11 @@ function Menu_Refresh() {
 
     for(var i = 0; i < Menu_ButtonArray.length; i++) {
         remove(Menu_ButtonArray[i]);
+        remove(Menu_ButtonTextArray[i]);
     }
 
     Menu_ButtonArray = [];
+    Menu_ButtonTextArray = [];
 
     Menu_SoundClick.play();
 }
@@ -175,6 +180,7 @@ function Menu_CreateButton(Title, XPosition, YPosition) {
     add(TempText);
 
     Menu_ButtonArray.push(TempImage);
+    Menu_ButtonTextArray.push(TempText);
 }
 
 //
