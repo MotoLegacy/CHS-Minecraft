@@ -17,7 +17,13 @@ function Game_Start() {
     // Keyboard input
     keyDownMethod(Input_KeyDown);
 
+    // Mouse Move
+    mouseMoveMethod(Input_MouseMove);
+
     // Generate a World
     // TODO: Seeds
     World_Generate(1);
+
+    // Spawn the Client
+    Player_Spawn(128, 8);
 }

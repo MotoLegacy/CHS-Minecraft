@@ -9,6 +9,12 @@
 function Input_KeyDown(e) {
 
 	switch(e.keyCode) {
+		case Keyboard.letter('A'):
+			Player_MoveLeft();
+			break;
+		case Keyboard.letter('D'):
+			Player_MoveRight();
+			break;
 		case Keyboard.LEFT:
 			Camera_PanLeft();
 			break;
@@ -18,4 +24,12 @@ function Input_KeyDown(e) {
 		default:
 			break;
 	}
+}
+
+//
+// Input_MouseMove(e)
+// Called whenever the Mouse is moved
+//
+function Input_MouseMove(e) {
+	Player_HeadFollow(e);
 }

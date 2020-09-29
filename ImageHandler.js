@@ -6,17 +6,26 @@
 var ImageHandler_Images 		= [];
 
 // Image Indexes
+// Splash
 var IMAGE_MOJANG 				= 0;
 var IMAGE_XBOX 					= 1;
+
+// Menu
 var IMAGE_PANORAMA 				= 2;
 var IMAGE_PANORAMATRAIL 		= 3;
 var IMAGE_MENUBUTTON 			= 4;
 var IMAGE_MENUBUTTONACTIVE 		= 5;
 var IMAGE_MCLOGO 				= 6;
 var IMAGE_DISCLAIMER 			= 7;
-var IMAGE_BLOCKBEDROCK 			= 8;
-var IMAGE_BLOCKDIRT 			= 9;
-var IMAGE_BLOCKGRASS 			= 10;
+
+// Player Parts
+var IMAGE_PLAYERHEADRIGHT 		= 8;
+var IMAGE_PLAYERHEADLEFT		= 9;
+
+// Blocks
+var IMAGE_BLOCKBEDROCK 			= 10;
+var IMAGE_BLOCKDIRT 			= 11;
+var IMAGE_BLOCKGRASS 			= 12;
 
 // Used in CacheLoop() for visualization
 var ImageHandler_BlackBG;
@@ -43,6 +52,10 @@ function ImageHandler_Initialize() {
 	ImageHandler_Images.push("assets/gui/buttonHi.png");
 	ImageHandler_Images.push("assets/gui/logo.png");
 	ImageHandler_Images.push("assets/gui/disclaimer.png");
+
+	// Player Parts
+	ImageHandler_Images.push("assets/mob/steve/default/head-right.png");
+	ImageHandler_Images.push("assets/mob/steve/default/head-left.png");
 
 	// Blocks
 	ImageHandler_Images.push("assets/blocks/bedrock.png");
