@@ -22,7 +22,7 @@ function Game_Start() {
 
     // Generate a World
     // TODO: Seeds
-    World_Generate(1);
+    World_Generate(693984298);
 
     // Spawn the Client
     Player_Spawn(128, 8);

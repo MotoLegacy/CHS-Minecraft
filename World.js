@@ -4,7 +4,7 @@
 
 // World Borders
 var WORLD_LENGTH 	= 256;
-var WORLD_HEIGHT 	= 256;
+var WORLD_HEIGHT 	= 12;
 
 // Blocks in World
 var World_Blocks 	= [];
@@ -86,10 +86,53 @@ function World_PlaceBlock(XCoord, YCoord, BlockID) {
 // World_Generate(Seed)
 // Uses Noise to Generate a World given a set Seed.
 //
+// ---------------------------
+// This world generator would not be possible without
+// David Bau's seedrandom library, find it here on GitHub:
+// https://github.com/davidbau/seedrandom
+// ---------------------------
+// The World generator uses 32 bits in order to increase
+// efficiency. If Seed 0 is provided, JS' standard Math.random 
+// will provide one.
+//
 function World_Generate(Seed) {
+	// Super flat Override
 	if (Seed == 1) {
 		World_GenerateFlatworld();
 		return;
+	}
+
+	//
+	// Actual World generation
+	//
+
+	// Determine seed (max = 32 bit integer limit)
+	if (Seed == 0) {
+		Seed = Math.floor((Math.random() * Math.floor(2147483646)) + 1);
+	}
+
+	// Make an RNG based on seed generated/provided
+	//var Seeded_RNG = new Math.seedrandom(Seed);
+
+	// Prepare the Noise Generator
+	Utility_SetSeed(Seed);
+
+	// Loop through World coordinates
+	for(var i = 0; i < WORLD_LENGTH; i++) {
+		// Force Bedrock at layer 0
+		World_PlaceBlock(i, 0, "minecraft:bedrock");
+
+		// Get Y Coord
+		var YCoord = Utility_1DNoise(i, WORLD_HEIGHT, 200, 50, 1);
+		YCoord = (Math.floor(YCoord/32)) + 1;
+		
+		// Place Grass Block
+		World_PlaceBlock(i, YCoord, "minecraft:grass");
+
+		// Put Dirt under Grass Block until we hit Bedrock
+		for (var j = YCoord - 1; j > 0; j--) {
+			World_PlaceBlock(i, j, "minecraft:dirt");
+		}
 	}
 }
 

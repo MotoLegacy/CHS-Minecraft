@@ -2,8 +2,21 @@
 // Utility.js - A set of extended CodeHS API features.
 //
 
+//
+// Additional Credit:
+// * Michael Bromley for his Blog post on 1-D Noise, based on former ScratchPixel.com
+// * Oliver Balfour for his Blog post, "Procederual Generation Part 1 - 1D Perlin Noise" on CodePen.io
+// * David Bau for Math.seedrandom()
+//
+
 // Array to store all Rectangles for Gradients
 var Utility_GradientArray = [];
+
+// The Seed for Noise Generation
+var Utility_Seed = 0;
+
+// The Seeded RNG
+var Utility_SeededRNG;
 
 //
 // Utility_InterpolateColor(ColorOne, ColorTwo, Fidelity)
@@ -85,4 +98,51 @@ function Utility_DrawGradient(Width, Height, StartColor, EndColor, RectWidth, Fi
         // Push to Gradient Array
         Utility_GradientArray.push(Rect);
     }
+}
+
+//
+// Utility_Lerp(a, b, t)
+// Linear Interpolation Function
+//
+function Utility_Lerp(a, b, t) {
+    return a * (1 - t) + b * t;
+}
+
+//
+// Utility_SetSeed(Seed)
+// Sets the Seed for Noise Generation.
+//
+function Utility_SetSeed(Seed) {
+    Utility_Seed = Seed;
+    Utility_SeededRNG = new Math.seedrandom(Seed);
+}
+
+//
+// Utility_1DNoise(X, Seed, Scale, Amplitude, YMax)
+// Returns a Y value for 1-Dimensional Noise in range of 0-Height
+// when given valid params.
+//
+function Utility_1DNoise(X, Height, Amplitude, Wavelength, Frequency) {
+    // Check if the Seeder has been set
+    if (Utility_Seed == 0) {
+        // It hasn't, so log it and return 0.
+        console.log("Utility_1DNoise: Seed not set! Use Utility_SetSeed()!");
+        return 0;
+    }
+
+    // Prepare our Variables
+    var Y = Height/2;
+    var A = Utility_SeededRNG.quick();
+    var B = Utility_SeededRNG.quick();
+    Frequency = Frequency / Wavelength;
+
+    if (X % Wavelength == 0) {
+        A = B;
+        B = Utility_SeededRNG.quick();
+        Y = Height / 2 + A * Amplitude;
+    } else {
+        Y = Height / 2 + Utility_Lerp(A, B, (X % Wavelength) / Wavelength) * Amplitude;
+    }
+
+    return Y;
 }
