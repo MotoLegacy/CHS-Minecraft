@@ -5,20 +5,18 @@
 //
 // Additional Credit:
 // * Michael Bromley for his Blog post on 1-D Noise, based on former ScratchPixel.com
+// * Oliver Balfour for his Blog post, "Procederual Generation Part 1 - 1D Perlin Noise" on CodePen.io
 // * David Bau for Math.seedrandom()
 //
 
 // Array to store all Rectangles for Gradients
 var Utility_GradientArray = [];
 
-// Array to store Y Value peaks.
-var Utility_1DNoiseArray = [];
+// The Seed for Noise Generation
+var Utility_Seed = 0;
 
-// For storing current Noise Seed
-var Utility_NoiseSeed = 0;
-
-// Noise's Seed RNG
-var Utility_SeedRNG;
+// The Seeded RNG
+var Utility_SeededRNG;
 
 //
 // Utility_InterpolateColor(ColorOne, ColorTwo, Fidelity)
@@ -111,67 +109,40 @@ function Utility_Lerp(a, b, t) {
 }
 
 //
-// Utility_Fill1DNoiseArray(Seed, YMax
-// Fills in Utility_1DNoiseArray[] with peaks in range of 0-YMax
-// -------------
-// 32 bit values are used to increase efficiency.
+// Utility_SetSeed(Seed)
+// Sets the Seed for Noise Generation.
 //
-function Utility_Fill1DNoiseArray(Seed, YMax) {
-    // Set the Noise Seed
-    Utility_NoiseSeed = Seed;
-
-    // Start RNG
-    Utility_SeedRNG = new Math.seedrandom(Seed);
-
-    // Empty Array
-    Utility_1DNoiseArray = [];
-
-    // Fill Array
-    for (var i = 0; i < YMax; i++) {
-        Utility_1DNoiseArray.push(Utility_SeedRNG.quick());
-    }
+function Utility_SetSeed(Seed) {
+    Utility_Seed = Seed;
+    Utility_SeededRNG = new Math.seedrandom(Seed);
 }
-
-/*
-        var scaledX = x * scale;
-        var xFloor = Math.floor(scaledX);
-        var t = scaledX - xFloor;
-        var tRemapSmoothstep = t * t * ( 3 - 2 * t );
-
-        /// Modulo using &#038;
-        var xMin = xFloor &#038; MAX_VERTICES_MASK;
-        var xMax = ( xMin + 1 ) &#038; MAX_VERTICES_MASK;
-
-        var y = lerp( r[ xMin ], r[ xMax ], tRemapSmoothstep );
-
-        return y * amplitude;
-        */
 
 //
 // Utility_1DNoise(X, Seed, Scale, Amplitude, YMax)
-// Returns a Y value for 1-Dimensional Noise in range of 0-YMax
-// when given the X coordinate, Seed, Scale, and Amplitude.
+// Returns a Y value for 1-Dimensional Noise in range of 0-Height
+// when given valid params.
 //
-function Utility_1DNoise(X, Seed, Scale, Amplitude, YMax) {
-    // Fill Noise array if different Seed (this is a failsafe in case someone
-    // tries to use this without filling the array first).
-    if (Seed != Utility_NoiseSeed) {
-        Utility_Fill1DNoiseArray(Seed, YMax);
+function Utility_1DNoise(X, Height, Amplitude, Wavelength, Frequency) {
+    // Check if the Seeder has been set
+    if (Utility_Seed == 0) {
+        // It hasn't, so log it and return 0.
+        console.log("Utility_1DNoise: Seed not set! Use Utility_SetSeed()!");
+        return 0;
     }
 
-    // Set up Range
-    //var ScaledX = X * Scale;
-    //var FloorX = Math.floor(ScaledX);
-    //var t = ScaledX - FloorX;
-    //var MinX = ScaledX % (YMax);
-    var MinX = Math.floor((Utility_SeedRNG.quick() * YMax) + 1);
-    var tRemapSmoothstep = Math.abs(MinX * MinX * (2 - 3 * MinX));
-    var MaxX = YMax;
+    // Prepare our Variables
+    var Y = Height/2;
+    var A = Utility_SeededRNG.quick();
+    var B = Utility_SeededRNG.quick();
+    Frequency = Frequency / Wavelength;
 
-    // Interpolate to get Y
-    console.log("MINX: " + MinX + " | MAXX: " + MaxX + " | tRemapSmoothstep: " + tRemapSmoothstep);
-    var Y = Utility_Lerp(Utility_1DNoiseArray[MinX], Utility_1DNoiseArray[MaxX], 1);
+    if (X % Wavelength == 0) {
+        A = B;
+        B = Utility_SeededRNG.quick();
+        Y = Height / 2 + A * Amplitude;
+    } else {
+        Y = Height / 2 + Utility_Lerp(A, B, (X % Wavelength) / Wavelength) * Amplitude;
+    }
 
-    // Multiply by Amp. and Return
-    return Y * Amplitude;
+    return Y;
 }

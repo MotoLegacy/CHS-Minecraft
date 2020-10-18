@@ -102,7 +102,9 @@ function World_Generate(Seed) {
 		return;
 	}
 
+	//
 	// Actual World generation
+	//
 
 	// Determine seed (max = 32 bit integer limit)
 	if (Seed == 0) {
@@ -110,10 +112,10 @@ function World_Generate(Seed) {
 	}
 
 	// Make an RNG based on seed generated/provided
-	var Seeded_RNG = new Math.seedrandom(Seed);
+	//var Seeded_RNG = new Math.seedrandom(Seed);
 
 	// Prepare the Noise Generator
-	Utility_Fill1DNoiseArray(Seed, WORLD_HEIGHT);
+	Utility_SetSeed(Seed);
 
 	// Loop through World coordinates
 	for(var i = 0; i < WORLD_LENGTH; i++) {
@@ -121,8 +123,9 @@ function World_Generate(Seed) {
 		World_PlaceBlock(i, 0, "minecraft:bedrock");
 
 		// Get Y Coord
-		var YCoord = Math.floor(Utility_1DNoise(i, Seed, 1, 1, WORLD_HEIGHT) * WORLD_HEIGHT) + 1;
-		//Utility_1DNoiseNoise(i, Seed, 1, 1, WORLD_HEIGHT);
+		var YCoord = Utility_1DNoise(i, WORLD_HEIGHT, 200, 50, 1);
+		YCoord = (Math.floor(YCoord/32)) + 1;
+		
 		// Place Grass Block
 		World_PlaceBlock(i, YCoord, "minecraft:grass");
 
