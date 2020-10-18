@@ -104,7 +104,6 @@ function Player_Update() {
 function Player_HeadFollow(e) {
 	var Angle = Math.atan2(e.getY() - (Player_Head.getY() + 8), e.getX() - (Player_Head.getX() + 8)) * 180 / Math.PI;
 	
-	console.log(Angle);
 	if (Player_FacingRight) {
 		if (Angle > 90 || Angle < -90) {
 			Player_FacingRight = false;
