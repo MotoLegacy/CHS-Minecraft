@@ -90,11 +90,11 @@ function ImageHandler_Cache() {
 	ImageHandler_BlackBG.setPosition(0, 0);
 
 	var Text1 = new Text("Caching Images, this may take some time!", "20pt Arial");
-	Text1.setPosition(50, 50);
+	Text1.setPosition(25, 50);
 	Text1.setColor(Color.white);
 
 	var Text2 = new Text("This is done to prevent an attempt to load an image in-game that isn't yet retrieved.", "20pt Arial");
-	Text2.setPosition(50, 80);
+	Text2.setPosition(25, 80);
 	Text2.setColor(Color.white);
 
 	ImageHandler_LoadingText = new Text("Loading: ", "20pt Arial");

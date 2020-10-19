@@ -74,9 +74,9 @@ function Player_Spawn(XCoord, YCoord) {
 
 	// Set up the Player timer..
 	// this is separate from ticks because
-	// the client should obviously run more
-	// often than the "server"
-	setTimer(Player_Update, 10);
+	// the "client" should run more frequently
+	// than our dummy server.
+	setTimer(Player_Update, 1);
 }
 
 //
@@ -115,12 +115,11 @@ function Player_Face(Direction) {
 // Called every 10ms, update function for the player.
 //
 function Player_Update() {
+	Player_VelocityX -= Player_VelocityX * 0.2;
+
 	// Add velocity to position
 	Player_XCoord += Player_VelocityX;
 	Player_YCoord += Player_VelocityY;
-
-	// Reset Velocity
-	Player_VelocityX = Player_VelocityY = 0;
 
 	// Set position
 	Player_SetPositionOnCanvas(Player_XCoord, Player_YCoord);
@@ -169,7 +168,7 @@ function Player_HeadFollow(e) {
 // Moves the Player to the Left.
 //
 function Player_MoveLeft() {
-	Player_VelocityX += Math.cos(90) * 4;
+	Player_VelocityX -= 1;
 	Player_FacingLeft = true;
 	Player_FacingRight = false;
 }
@@ -179,7 +178,7 @@ function Player_MoveLeft() {
 // Moves the Player to the Right.
 //
 function Player_MoveRight() {
-	Player_VelocityX -= Math.cos(90) * 4;
+	Player_VelocityX += 1;
 	Player_FacingRight = true;
 	Player_FacingLeft = false;
 }
