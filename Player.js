@@ -4,12 +4,18 @@
 
 // Definitions for Player Parts
 var PLAYER_HEADPART 	= 0;
+var PLAYER_TORSOPART 	= 1;
+var PLAYER_ARMPART 		= 2;
+var PLAYER_LEGPART 		= 3;
 
 // Player Body Parts
 var Player_Head;
+var Player_Torso;
+var Player_Arm;
+var Player_Leg;
 
 // Array containing all player parts
-var Player_Client;
+var Player_Client		= [];
 
 // Player Velocity
 var Player_VelocityX 	= 0;
@@ -30,6 +36,27 @@ function Player_Initialize() {
 	// Head
 	Player_Head = new WebImage(ImageHandler_Images[IMAGE_PLAYERHEADRIGHT]);
 	Player_Head.setPosition(50, 50);
+	Player_Client.push(Player_Head);
+
+	// Torso
+	Player_Torso = new WebImage(ImageHandler_Images[IMAGE_PLAYERTORSORIGHT]);
+	Player_Torso.setPosition(54, 66);
+	Player_Client.push(Player_Torso);
+
+	// Arm
+	Player_Arm = new WebImage(ImageHandler_Images[IMAGE_PLAYERARMRIGHT]);
+	Player_Arm.setPosition(54, 66);
+	Player_Client.push(Player_Arm);
+
+	// Leg
+	Player_Leg = new WebImage(ImageHandler_Images[IMAGE_PLAYERLEGRIGHT]);
+	Player_Leg.setPosition(54, 90);
+	Player_Client.push(Player_Leg);
+
+	// Add all Parts to the Canvas in the correct order
+	add(Player_Leg);
+	add(Player_Torso);
+	add(Player_Arm);
 	add(Player_Head);
 }
 
@@ -53,12 +80,15 @@ function Player_Spawn(XCoord, YCoord) {
 }
 
 //
-// Player_SetPositionOnCanvas()
+// Player_SetPositionOnCanvas(XCoord, YCoord)
 // Updates the Players poisition relative to canvas, not world.
 // TODO: Get World coords, too
 //
 function Player_SetPositionOnCanvas(XCoord, YCoord) {
 	Player_Head.setPosition(XCoord, YCoord);
+	Player_Torso.setPosition(XCoord + 4, YCoord + 16);
+	Player_Arm.setPosition(XCoord + 4, YCoord + 16);
+	Player_Leg.setPosition(XCoord + 4, YCoord + 40);
 }
 
 //
@@ -69,8 +99,14 @@ function Player_SetPositionOnCanvas(XCoord, YCoord) {
 function Player_Face(Direction) {
 	if (Direction) { // Right
 		Player_Head.setImage(ImageHandler_Images[IMAGE_PLAYERHEADRIGHT]);
+		Player_Torso.setImage(ImageHandler_Images[IMAGE_PLAYERTORSORIGHT]);
+		Player_Arm.setImage(ImageHandler_Images[IMAGE_PLAYERARMRIGHT]);
+		Player_Leg.setImage(ImageHandler_Images[IMAGE_PLAYERLEGRIGHT]);
 	} else { // Left
 		Player_Head.setImage(ImageHandler_Images[IMAGE_PLAYERHEADLEFT]);
+		Player_Torso.setImage(ImageHandler_Images[IMAGE_PLAYERTORSOLEFT]);
+		Player_Arm.setImage(ImageHandler_Images[IMAGE_PLAYERARMLEFT]);
+		Player_Leg.setImage(ImageHandler_Images[IMAGE_PLAYERLEGLEFT]);
 	}
 }
 

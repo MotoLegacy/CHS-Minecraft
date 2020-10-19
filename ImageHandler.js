@@ -21,11 +21,17 @@ var IMAGE_DISCLAIMER 			= 7;
 // Player Parts
 var IMAGE_PLAYERHEADRIGHT 		= 8;
 var IMAGE_PLAYERHEADLEFT		= 9;
+var IMAGE_PLAYERTORSORIGHT 		= 10;
+var IMAGE_PLAYERTORSOLEFT 		= 11;
+var IMAGE_PLAYERARMRIGHT 		= 12;
+var IMAGE_PLAYERARMLEFT 		= 13;
+var IMAGE_PLAYERLEGRIGHT 		= 14;
+var IMAGE_PLAYERLEGLEFT 		= 15;
 
 // Blocks
-var IMAGE_BLOCKBEDROCK 			= 10;
-var IMAGE_BLOCKDIRT 			= 11;
-var IMAGE_BLOCKGRASS 			= 12;
+var IMAGE_BLOCKBEDROCK 			= 16;
+var IMAGE_BLOCKDIRT 			= 17;
+var IMAGE_BLOCKGRASS 			= 18;
 
 // Used in CacheLoop() for visualization
 var ImageHandler_BlackBG;
@@ -56,6 +62,12 @@ function ImageHandler_Initialize() {
 	// Player Parts
 	ImageHandler_Images.push("assets/mob/steve/default/head-right.png");
 	ImageHandler_Images.push("assets/mob/steve/default/head-left.png");
+	ImageHandler_Images.push("assets/mob/steve/default/torso-right.png");
+	ImageHandler_Images.push("assets/mob/steve/default/torso-left.png");
+	ImageHandler_Images.push("assets/mob/steve/default/arm-right.png");
+	ImageHandler_Images.push("assets/mob/steve/default/arm-left.png");
+	ImageHandler_Images.push("assets/mob/steve/default/leg-right.png");
+	ImageHandler_Images.push("assets/mob/steve/default/leg-left.png");
 
 	// Blocks
 	ImageHandler_Images.push("assets/blocks/bedrock.png");
