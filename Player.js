@@ -102,23 +102,30 @@ function Player_Update() {
 // Have Player Head follow the Cursor
 //
 function Player_HeadFollow(e) {
+	// Calculate the Angle
 	var Angle = Math.atan2(e.getY() - (Player_Head.getY() + 8), e.getX() - (Player_Head.getX() + 8)) * 180 / Math.PI;
-	
-	if (Player_FacingRight) {
-		if (Angle > 90 || Angle < -90) {
-			Player_FacingRight = false;
-			Player_FacingLeft = true;
-		}
 
-		Player_Head.setRotation(Angle);
+	// Determine Direction
+	if (Angle > -90 && Angle < 90) {
+		Player_FacingRight = true;
+		Player_FacingLeft = false;
 	} else {
-		if (Angle < 90 || Angle > -90) {
-			Player_FacingRight = true;
-			Player_FacingLeft = false;
-		}
+		Player_FacingLeft = true;
+		Player_FacingRight = false;
 
-		Player_Head.setRotation(Angle - 90);
+		// Compensate for Direction Change
+		Angle = Angle - 180;
 	}
+
+	// Add a downward limit so the player isn't completely looking into their body
+	if (Angle > 80 && Player_FacingRight == true) {
+		Angle = 80;
+	} else if (Angle < (100  - 180) && Angle > (-90 - 180) && Player_FacingLeft == true) {
+		Angle = (100 - 180);
+	}
+
+	// Finally, set the Player Head Angle.
+	Player_Head.setRotation(Angle);
 }
 
 //
