@@ -28,6 +28,9 @@ var Player_YCoord		= 0;
 var Player_FacingRight 	= true;
 var Player_FacingLeft 	= false;
 
+var Player_OnGround 	= false;
+var Player_Jumping 		= false;
+
 //
 // Player_Initialize()
 // Sets up all of the Player Body Parts
@@ -111,11 +114,83 @@ function Player_Face(Direction) {
 }
 
 //
+// Player_CheckGroundCollision()
+// Check Collision between the Player hitbox and any blocks near them.
+//
+function Player_CheckGroundCollision() {
+	var XCoord = Player_Leg.getX() - 4;
+	var YCoord = Player_Head.getY();
+	var Width = 12;
+	var Height = 70;
+	var BlocksBelowPlayer = World_GetBlocksInBounds(XCoord - 2, YCoord - 2, Width, Height);
+
+	if (BlocksBelowPlayer.length == 0) {
+		Player_OnGround = false;
+	} else {
+		Player_OnGround = true;
+
+		// Set Y Velocity to 0 to avoid sinking through the floor
+		Player_VelocityY = 0;
+	}
+}
+
+//
+// Player_CheckLeftCollision()
+// Check if there are Blocks preventing the Player from moving Left
+//
+function Player_CheckLeftCollision() {
+	var XCoord = Player_Head.getX();
+	var YCoord = Player_Head.getY();
+	var Width = 2;
+	var Height = 60;
+
+	var BlocksLeftPlayer = World_GetBlocksInBounds(XCoord, YCoord, Width, Height);
+
+	if (BlocksLeftPlayer.length > 0) {
+		return false;
+	}
+
+	return true;
+}
+
+//
+// Player_CheckRightCollision()
+// Check if there are Blocks preventing the Player from moving Left
+//
+function Player_CheckRightCollision() {
+	var XCoord = Player_Head.getX() + 16;
+	var YCoord = Player_Head.getY();
+	var Width = 2;
+	var Height = 60;
+
+	var BlocksRightPlayer = World_GetBlocksInBounds(XCoord, YCoord, Width, Height);
+
+	if (BlocksRightPlayer.length > 0) {
+		return false;
+	}
+
+	return true;
+}
+
+//
 // Player_Update()
 // Called every 10ms, update function for the player.
 //
 function Player_Update() {
+	// Refude Velocity
 	Player_VelocityX -= Player_VelocityX * 0.2;
+	Player_VelocityY -= Player_VelocityY * 0.1;
+
+	// Check if the Player is on the Ground
+	if (Player_Jumping == false)
+		Player_CheckGroundCollision();
+
+	Player_Jumping = false;
+
+	// If we're falling, add to Y Velocity
+	if (Player_OnGround == false) {
+		Player_VelocityY += 0.75;
+	}
 
 	// Add velocity to position
 	Player_XCoord += Player_VelocityX;
@@ -168,7 +243,10 @@ function Player_HeadFollow(e) {
 // Moves the Player to the Left.
 //
 function Player_MoveLeft() {
-	Player_VelocityX -= 1;
+	// If the Left is Free, add to Velocity
+	if (Player_CheckLeftCollision())
+		Player_VelocityX -= 1;
+
 	Player_FacingLeft = true;
 	Player_FacingRight = false;
 }
@@ -178,7 +256,23 @@ function Player_MoveLeft() {
 // Moves the Player to the Right.
 //
 function Player_MoveRight() {
-	Player_VelocityX += 1;
+	// If the Right is Free, add to Velocity
+	if (Player_CheckRightCollision())
+		Player_VelocityX += 1;
+
 	Player_FacingRight = true;
 	Player_FacingLeft = false;
+}
+
+//
+// Player_Jump()
+// Adds to the Y Velocity to make the Player jump.
+//
+function Player_Jump() {
+	// Don't try to jump if we're off the Ground
+	if (Player_OnGround == false)
+		return;
+
+	Player_Jumping = true;
+	Player_VelocityY -= 12;
 }

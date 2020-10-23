@@ -3,11 +3,14 @@
 //
 
 // World Borders
-var WORLD_LENGTH 	= 256;
-var WORLD_HEIGHT 	= 12;
+var WORLD_LENGTH 		= 256;
+var WORLD_HEIGHT 		= 12;
 
 // Blocks in World
-var World_Blocks 	= [];
+var World_Blocks 		= [];
+
+// Blocks in World, but only the ones in the Canvas
+var World_CanvasBlocks 	= [];
 
 //
 // World_IsInCanvas(XCoord, YCoord)
@@ -37,10 +40,44 @@ function World_GetCanvasYCoordinate(Coord) {
 }
 
 //
+// World_GetBlocksInBounds(X, Y, Width, Height)
+// Returns an Array of Blocks that are in the given rectangle
+//
+function World_GetBlocksInBounds(X, Y, Width, Height) {
+	// Where we'll store Blocks and later return
+	var TempBlocks = [];
+
+	// Append Position tot he Width/Height to complete boundary
+	Width = X + Width;
+	Height = Y + Height;
+
+	// X Boundaries
+	for(var XCoord = X; XCoord < Width; XCoord++) {
+		// Y Boundaries
+		for(var YCoord = Y; YCoord < Height; YCoord++) {
+			for (var i = 0; i < World_CanvasBlocks.length; i++) {
+				// Is Our X in Range?
+				if (XCoord >= World_CanvasBlocks[i].Image.getX() && XCoord <= World_CanvasBlocks[i].Image.getX() + 32) {
+					// How about our Y?
+					if (YCoord >= World_CanvasBlocks[i].Image.getY() && YCoord <= World_CanvasBlocks[i].Image.getY() + 32) {
+						// All dependancies met, add to Array.
+						TempBlocks.push(World_CanvasBlocks[i]);
+					}	
+				}
+			}
+		}
+	}
+
+	return TempBlocks;
+}
+
+//
 // World_Redraw()
 // Redraws all blocks in the world
 //
 function World_Redraw() {
+	World_CanvasBlocks = [];
+
 	for (var i = 0; i < World_Blocks.length; i++) {
 		remove(World_Blocks[i].Image);
 
@@ -50,8 +87,10 @@ function World_Redraw() {
 		World_Blocks[i].Image.setPosition(XDrawCoord, YDrawCoord);
 		
 		// Re-draw if still in Canvas
-		if (World_IsInCanvas(XDrawCoord, YDrawCoord))
+		if (World_IsInCanvas(XDrawCoord, YDrawCoord)) {
 			add(World_Blocks[i].Image);
+			World_CanvasBlocks.push(World_Blocks[i]);
+		}
 	}
 }
 
@@ -60,6 +99,9 @@ function World_Redraw() {
 // Places a Block at the Given Coordinates
 //
 function World_PlaceBlock(XCoord, YCoord, BlockID) {
+	// Is the Block in the Canvas?
+	var IsInCanvas = false;
+
 	// Create the Block Image
 	var BlockImage = new WebImage(Block_GetTexture(BlockID));
 
@@ -73,6 +115,8 @@ function World_PlaceBlock(XCoord, YCoord, BlockID) {
 	// Only Add what is visible to the canvas
 	if (World_IsInCanvas(XDrawCoord, YDrawCoord)) {
 		add(BlockImage);
+
+		IsInCanvas = true;
 	}
 
 	// Create a new Block
@@ -80,6 +124,10 @@ function World_PlaceBlock(XCoord, YCoord, BlockID) {
 
 	// Push to Block Array
 	World_Blocks.push(TempBlock);
+
+	// Push to the Canvas Array
+	if (IsInCanvas)
+		World_CanvasBlocks.push(TempBlock);
 }
 
 //

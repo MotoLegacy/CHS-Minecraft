@@ -7,13 +7,15 @@
 // Called whenever a key is pressed.
 //
 function Input_KeyDown(e) {
-
 	switch(e.keyCode) {
 		case Keyboard.letter('A'):
 			Player_MoveLeft();
 			break;
 		case Keyboard.letter('D'):
 			Player_MoveRight();
+			break;
+		case Keyboard.SPACE:
+			Player_Jump();
 			break;
 		case Keyboard.LEFT:
 			Camera_PanLeft();
